@@ -230,21 +230,6 @@
   .socials a:hover{background:var(--pink);color:#fff}
   .socials svg{width:18px;height:18px;fill:currentColor}
 
-  /* ===== CARD DE CAPTURA ===== */
-  .modal{position:fixed;inset:0;z-index:300;display:none;align-items:center;justify-content:center;padding:20px}
-  .modal.open{display:flex}
-  .modal-bg{position:absolute;inset:0;background:rgba(8,8,8,.72);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);animation:fade .3s}
-  .modal-card{position:relative;width:100%;max-width:440px;padding:36px 30px 30px;background:rgba(30,30,30,.82);border:1px solid var(--line);border-radius:26px;backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);box-shadow:0 40px 90px -30px rgba(233,30,140,.7);animation:pop .35s ease;max-height:calc(100vh - 40px);overflow:auto}
-  .modal-card::before{content:"";position:absolute;inset:0 0 auto 0;height:5px;border-radius:26px 26px 0 0;background:linear-gradient(90deg,var(--pink),var(--lime))}
-  .modal-card h2{font-size:1.65rem;font-weight:900;padding-right:30px}
-  .modal-card h2 em{font-style:normal;color:var(--lime)}
-  .modal-card > p{color:var(--muted);margin:10px 0 22px;font-size:.95rem}
-  .modal-close{position:absolute;top:14px;right:14px;width:40px;height:40px;border-radius:50%;border:1px solid var(--line);background:var(--glass);cursor:pointer;font-size:1.3rem;line-height:1}
-  .modal-close:hover{background:var(--pink)}
-  .modal .form .btn{justify-self:stretch}
-  @keyframes fade{from{opacity:0}}
-  @keyframes pop{from{opacity:0;transform:translateY(20px) scale(.96)}}
-
   /* ===== ANIMAÇÃO DE ENTRADA ===== */
   .js .reveal{opacity:0;transform:translateY(28px);transition:opacity .8s ease,transform .8s ease}
   .js .reveal.in{opacity:1;transform:none}
@@ -514,33 +499,6 @@
     </div>
   </div>
 </footer>
-
-<!-- ===================== CARD DE CAPTURA (mídia kit) ===================== -->
-<div class="modal" id="leadModal" aria-hidden="true">
-  <div class="modal-bg" data-close></div>
-  <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="lead-title">
-    <button class="modal-close" type="button" aria-label="Fechar" data-close>×</button>
-    <h2 id="lead-title">Quer meu <em>mídia kit</em> completo?</h2>
-    <p>Deixa seu nome e e-mail que eu te mando valores, formatos e resultados.</p>
-    <!-- Igual ao formulário de contato: para receber os dados de verdade,
-         ligue este form a um serviço como o Formspree. -->
-    <form class="form" id="leadForm" novalidate>
-      <div class="field">
-        <label for="l-nome">Nome</label>
-        <input id="l-nome" name="nome" type="text" autocomplete="name" placeholder="Seu nome" required>
-      </div>
-      <div class="field">
-        <label for="l-email">E-mail</label>
-        <input id="l-email" name="email" type="email" autocomplete="email" placeholder="voce@suamarca.com.br" required>
-      </div>
-      <button type="submit" class="btn btn-lime">Quero receber</button>
-    </form>
-    <div class="success" id="leadSuccess" role="status" tabindex="-1">
-      <h3>Prontinho! ✨</h3>
-      <p>Seu mídia kit vai chegar no seu e-mail em breve.</p>
-    </div>
-  </div>
-</div>
 
 <script>
 /* =====================================================================
@@ -822,45 +780,11 @@ function handleForm(form, success) {
   });
 }
 handleForm($("#contactForm"), $("#contactSuccess"));
-handleForm($("#leadForm"), $("#leadSuccess"));
 
-/* Card de captura: abre sozinho depois de 7 segundos, uma vez por visita */
-const modal = $("#leadModal");
-let lastFocus = null;
-function openModal() {
-  lastFocus = document.activeElement;
-  modal.classList.add("open");
-  modal.setAttribute("aria-hidden", "false");
-  setTimeout(() => $("#l-nome").focus(), 50);
-}
-function closeModal() {
-  modal.classList.remove("open");
-  modal.setAttribute("aria-hidden", "true");
-  if (lastFocus && lastFocus.focus) lastFocus.focus();
-}
-modal.querySelectorAll("[data-close]").forEach((el) => el.addEventListener("click", closeModal));
+/* Esc fecha o menu do celular */
 document.addEventListener("keydown", (e) => {
-  if (!modal.classList.contains("open")) {
-    if (e.key === "Escape" && menu.classList.contains("open")) setMenu(false);
-    return;
-  }
-  if (e.key === "Escape") closeModal();
-  if (e.key === "Tab") { /* mantém o foco dentro do card */
-    const f = [...modal.querySelectorAll("button,input,[tabindex]:not([tabindex='-1'])")].filter((x) => x.offsetParent);
-    if (!f.length) return;
-    const first = f[0], last = f[f.length - 1];
-    if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
-    else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
-  }
+  if (e.key === "Escape" && menu.classList.contains("open")) setMenu(false);
 });
-let seen = false;
-try { seen = sessionStorage.getItem("midiaKitVisto") === "1"; } catch (err) {}
-if (!seen) {
-  setTimeout(() => {
-    openModal();
-    try { sessionStorage.setItem("midiaKitVisto", "1"); } catch (err) {}
-  }, 7000);
-}
 
 /* Ano automático no rodapé */
 $("#year").textContent = new Date().getFullYear();
