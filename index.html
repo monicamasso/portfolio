@@ -978,8 +978,20 @@
   .tt-videos-fila{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:22px}
   .tt-video{margin:0}
   .tt-video-quadro{position:relative;aspect-ratio:325/575;border-radius:22px;overflow:hidden;background:#141414;box-shadow:0 22px 34px -22px rgba(0,0,0,.55)}
-  .tt-video-quadro iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+  .tt-video-quadro iframe{position:absolute;inset:0;width:100%;height:100%;border:0;z-index:2}
+  .tt-capa{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:20px;border:0;cursor:pointer;color:#fff;text-align:center;font-family:inherit;
+    background:radial-gradient(80% 50% at 50% 0%,rgba(224,33,143,.55),transparent 70%),linear-gradient(170deg,#262626,#0b0b0b)}
+  .tt-tag{position:absolute;top:16px;left:16px;background:var(--pink);color:#fff;font-family:"Anton",Impact,sans-serif;text-transform:uppercase;letter-spacing:.08em;font-size:.72rem;padding:5px 12px;border-radius:999px}
+  .tt-play{width:64px;height:64px;border-radius:50%;background:#fff;position:relative;box-shadow:0 12px 24px -8px rgba(0,0,0,.6);transition:transform .2s}
+  .tt-play::before{content:"";position:absolute;left:50%;top:50%;margin:-11px 0 0 -7px;border-left:19px solid #111;border-top:11px solid transparent;border-bottom:11px solid transparent;transform:translateX(2px)}
+  .tt-capa:hover .tt-play,.tt-capa:focus-visible .tt-play{transform:scale(1.1);background:var(--pink)}
+  .tt-capa:hover .tt-play::before,.tt-capa:focus-visible .tt-play::before{border-left-color:#fff}
+  .tt-prod{font-family:"Anton",Impact,sans-serif;text-transform:uppercase;font-size:1.7rem;line-height:1;letter-spacing:.01em}
+  .tt-toque{font-size:.78rem;color:#bdb6aa}
   .tt-video figcaption{display:flex;flex-direction:column;gap:2px;margin-top:12px;padding:0 4px}
+  .tt-video figcaption em{align-self:flex-start;margin-top:6px;font-style:normal;font-weight:600;font-size:.78rem;color:#fff;background:var(--pink);border-radius:999px;padding:4px 12px}
+  .tt-video figcaption a{margin-top:6px;font-size:.78rem;color:var(--gray);text-decoration:none;border-bottom:1px solid #cfcfcf;align-self:flex-start}
+  .tt-video figcaption a:hover{color:var(--ink);border-color:var(--ink)}
   .tt-video figcaption b{font-family:"Anton",Impact,sans-serif;font-weight:400;text-transform:uppercase;font-size:1.15rem;letter-spacing:.01em}
   .tt-video figcaption span{color:var(--pink);font-weight:600;font-size:.85rem}
   .tt-videos-nota{margin:20px 0 0;color:var(--gray);font-size:.78rem;line-height:1.6}
@@ -1424,7 +1436,7 @@
       </section>
       <div class="tt-videos reveal" aria-labelledby="ttVideosTitulo">
         <h4 class="tt-videos-titulo" id="ttVideosTitulo"><span class="spark" aria-hidden="true"></span>Vídeos que mais venderam</h4>
-        <p class="tt-videos-sub">Vídeos nativos reais do meu TikTok Shop. Toque no play para assistir.</p>
+        <p class="tt-videos-sub">Vídeos nativos reais do meu TikTok Shop. Toque no play para assistir aqui mesmo.</p>
         <div class="tt-videos-fila" id="ttVideos"></div>
         <p class="tt-videos-nota" id="ttVideosNota"></p>
       </div>
@@ -1883,7 +1895,7 @@ const TIKTOK = {
   videos: [
     { id: "7698558207463148821", produto: "Travesseiro Fresh", venda: "R$ 2,0 mil em vendas", itens: "4 itens" },
     { id: "7689939853718342933", produto: "Jogo de toalhas", venda: "R$ 1,6 mil em vendas", itens: "5 itens" },
-    { id: "7706996899349400850", produto: "Capa de iPhone", venda: "R$ 1,4 mil em vendas", itens: "47 itens" },
+    { id: "7706996899349400850", produto: "Capa de iPhone", venda: "R$ 1,4 mil em vendas", itens: "47 itens", total: "+600 capas vendidas no total" },
     { id: "7705790890073181461", produto: "Edredom", venda: "R$ 1,1 mil em vendas", itens: "2 itens" }
   ],
   videosNota: "Valores de vendas por vídeo conforme a Análise de receita da Central de Afiliados do TikTok Shop (pedidos líquidos).",
@@ -2425,10 +2437,37 @@ const barrasTxt = (arr) => { const max = Math.max(...arr.map((x) => x.v)); retur
 $("#ttProdutos").innerHTML = barrasTxt(TIKTOK.produtos);
 $("#ttCategorias").innerHTML = barrasTxt(TIKTOK.categorias);
 $("#ttVideos").innerHTML = TIKTOK.videos.map((v) => `
-  <figure class="tt-video">
-    <div class="tt-video-quadro"><iframe src="https://www.tiktok.com/embed/v2/${esc(v.id)}" title="Vídeo de ${esc(v.produto)} no TikTok" loading="lazy" allow="fullscreen; autoplay" allowfullscreen></iframe></div>
-    <figcaption><b>${esc(v.produto)}</b><span>${esc(v.venda)} · ${esc(v.itens)}</span></figcaption>
+  <figure class="tt-video" data-id="${esc(v.id)}">
+    <div class="tt-video-quadro">
+      <button type="button" class="tt-capa" aria-label="Assistir o vídeo de ${esc(v.produto)}">
+        <span class="tt-tag">TikTok Shop</span>
+        <span class="tt-play" aria-hidden="true"></span>
+        <span class="tt-prod">${esc(v.produto)}</span>
+        <span class="tt-toque">Toque para assistir</span>
+      </button>
+    </div>
+    <figcaption>
+      <b>${esc(v.produto)}</b><span>${esc(v.venda)} · ${esc(v.itens)}</span>
+      ${v.total ? `<em>${esc(v.total)}</em>` : ""}
+      <a href="https://www.tiktok.com/@monicamasso_/video/${esc(v.id)}" target="_blank" rel="noopener">Abrir no TikTok ↗</a>
+    </figcaption>
   </figure>`).join("");
+/* Só carrega o player do TikTok quando a pessoa toca (um por vez), para não falhar com vários juntos */
+$("#ttVideos").addEventListener("click", (e) => {
+  const capa = e.target.closest(".tt-capa");
+  if (!capa) return;
+  const lista = $("#ttVideos");
+  lista.querySelectorAll(".tt-video.tocando").forEach((f) => { f.classList.remove("tocando"); f.querySelector("iframe")?.remove(); });
+  const fig = capa.closest(".tt-video");
+  const quadro = fig.querySelector(".tt-video-quadro");
+  const f = document.createElement("iframe");
+  f.src = "https://www.tiktok.com/embed/v2/" + fig.dataset.id;
+  f.title = "Vídeo de " + fig.querySelector("figcaption b").textContent + " no TikTok";
+  f.allow = "fullscreen; autoplay";
+  f.allowFullscreen = true;
+  quadro.appendChild(f);
+  fig.classList.add("tocando");
+});
 $("#ttVideosNota").textContent = TIKTOK.videosNota;
 $("#ttFunil").innerHTML = TIKTOK.funil.map((x) => `<div class="tt-linha"><span>${esc(x.l)}</span><b>${esc(x.v)}</b></div>`).join("");
 $("#ttTarifa").innerHTML = TIKTOK.tarifa.map((x) => `<div class="influ-linha"><div><b>${esc(x.nome)}</b><small>${esc(x.detalhe)}</small></div><strong class="preco">${esc(x.preco)}<small class="un">${esc(x.un)}</small></strong></div>`).join("");
