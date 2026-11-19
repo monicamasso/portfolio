@@ -1082,8 +1082,33 @@
     .hero .hero-invertida .hero-stats strong{font-size:1.6rem}
     .hero .hero-invertida .hero-stats span{font-size:.74rem}
   }
+  /* Capa no celular: kicker, vídeo, nome grande, depois o resto */
+  @media (max-width:900px){
+    .hero .hero-grid.hero-invertida{display:flex;flex-direction:column;align-items:stretch;gap:0}
+    .hero .hero-texto,.hero .hero-texto .bloco{display:contents}
+    .hero .hero-kicker{order:1;align-self:flex-start}
+    .hero .hero-photo.hero-celular{order:2;align-self:center;margin:22px 0 10px}
+    .hero h1{order:3;margin-top:18px;padding-bottom:.1em}
+    .hero h1 .h1-assina{position:relative;display:block;right:auto;bottom:auto;margin:-.3em 0 0 .1em;font-size:1.35em;line-height:1.1;transform:rotate(-4deg);transform-origin:left center}
+    .hero .chips{order:4;margin-top:6px}
+    .hero .hero-phrase{order:5;margin-top:22px}
+    .hero .hero-stats{order:6}
+    .hero .hero-btns{order:7;margin-top:22px}
+    .hero .proof{order:8;margin-top:18px}
+    /* Sobre: texto cinza colado no título e linha neutra entre os itens */
+    .sobre-linhas{gap:0}
+    .sobre-linhas li{gap:0;padding:26px 0;border-bottom:1px solid #cfcfcf}
+    .sobre-linhas li:first-child{padding-top:4px}
+    .sobre-linhas li:last-child{border-bottom:0;padding-bottom:8px}
+    .sobre-linhas .tit{padding-bottom:26px;margin-bottom:2px}
+    /* Carrosséis: mais espaço entre um card e o próximo */
+    #carrosseis .carrosseis{gap:96px}
+  }
   /* Ajustes finais do celular */
   @media (max-width:700px){
+    .filters{flex-wrap:wrap;overflow:visible;margin-right:0;padding:0;gap:10px;margin-bottom:24px}
+    .filter[data-filter="todos"]{display:none}
+    #works{scroll-margin-top:90px}
     #numeros .results{grid-template-columns:1fr;gap:26px}
     #fotos .fotos-fila{grid-template-columns:repeat(2,minmax(0,1fr));gap:22px 14px;padding-left:0;padding-right:0}
     .insta-num{grid-template-columns:repeat(2,minmax(0,1fr));row-gap:22px}
@@ -2125,7 +2150,7 @@ const atualizarSetas = () => worksEl.querySelectorAll(".grupo-fila").forEach(set
 
 /* "todos" mostra um bloco por nicho (título com emoji + fileira de vídeos); um nicho escolhido mostra só o dele */
 function filtrar(nome) {
-  const grupos = nome === "todos" ? [...NICHOS] : NICHOS.filter((g) => g.nome === nome);
+  const grupos = nome === "todos" ? [...NICHOS] : nome === "nenhum" ? [] : NICHOS.filter((g) => g.nome === nome);
   const montados = grupos.map((g) => ({ g, videos: ordenar(VIDEOS.filter((v) => grupoDe(v.nicho) === g.nome)) }));
   const soltos = VIDEOS.filter((v) => grupoDe(v.nicho) === "Outros");
   if (nome === "todos" && soltos.length) montados.push({ g: { nome: "Outros", emoji: "🎬" }, videos: ordenar(soltos) });
@@ -2144,7 +2169,9 @@ function filtrar(nome) {
       </div>
       <div class="grupo-fila">${videos.map((v) => cardVideo(v, n++)).join("")}</div>
     </section>`).join("");
-  $("#worksCount").innerHTML = recolher
+  $("#worksCount").innerHTML = nome === "nenhum"
+    ? `<b class="hint-num">${VIDEOS.length} vídeos</b> · toque em um nicho pra ver`
+    : recolher
     ? `<b class="hint-num">${lista.length} vídeos</b> · clique em um nicho pra abrir`
     : `<b class="hint-num">${lista.length} vídeos</b> · arrasta pro lado pra ver todos →`;
   atualizarSetas();
@@ -2200,13 +2227,22 @@ filtersEl.innerHTML = [{ nome: "todos", emoji: "✨" }, ...NICHOS].map((g, i) =>
   return `<button type="button" class="filter" data-filter="${esc(g.nome)}" aria-pressed="${i === 0}"><span class="filter-emoji" aria-hidden="true">${g.emoji}</span> ${g.nome === "todos" ? "Todos" : esc(g.nome)} <small>${total}</small></button>`;
 }).join("");
 
+/* No celular os vídeos só aparecem depois de tocar na pílula do nicho (tocar de novo fecha) */
+const celularNichos = window.matchMedia("(max-width:700px)");
 filtersEl.addEventListener("click", (e) => {
   const btn = e.target.closest(".filter");
   if (!btn) return;
-  filtersEl.querySelectorAll(".filter").forEach((b) => b.setAttribute("aria-pressed", b === btn));
-  filtrar(btn.dataset.filter);
+  const fechar = celularNichos.matches && btn.getAttribute("aria-pressed") === "true";
+  filtersEl.querySelectorAll(".filter").forEach((b) => b.setAttribute("aria-pressed", !fechar && b === btn));
+  filtrar(fechar ? "nenhum" : btn.dataset.filter);
+  if (celularNichos.matches && !fechar) worksEl.scrollIntoView({ block: "start", behavior: reduceMotion ? "auto" : "smooth" });
 });
-filtrar("todos");
+if (celularNichos.matches) {
+  filtersEl.querySelectorAll(".filter").forEach((b) => b.setAttribute("aria-pressed", "false"));
+  filtrar("nenhum");
+} else {
+  filtrar("todos");
+}
 
 /* Celular da capa: o vídeo é img/capa.mp4 (vertical, sem som, em loop). Para trocar, substitua esse arquivo.
    Quem pediu menos animação no sistema vê só o primeiro quadro parado. */
