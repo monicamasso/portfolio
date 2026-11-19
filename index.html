@@ -16,8 +16,9 @@
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%23E0218F' d='M12 0C12.9 6.9 17.1 11.1 24 12C17.1 12.9 12.9 17.1 12 24C11.1 17.1 6.9 12.9 0 12C6.9 11.1 11.1 6.9 12 0Z'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Anton&family=Mrs+Saint+Delafield&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
+  @font-face{font-family:"Astagina Signature";src:url("fonts/AstaginaSignature.otf") format("opentype");font-display:swap}
 
   /* ===== IDENTIDADE DO PORTFÓLIO CANVA: cinza claro, papel, rosa-choque e preto ===== */
   :root{
@@ -71,10 +72,10 @@
   /* Títulos: letra condensada + assinatura cursiva rosa por cima */
   .eyebrow{display:inline-block;font-family:"Anton",Impact,sans-serif;font-size:.95rem;letter-spacing:.06em;text-transform:uppercase;color:#fff;background:var(--pink-ink);padding:6px 14px;transform:rotate(-3deg);margin-bottom:22px;box-shadow:3px 3px 0 var(--ink)}
   .title{font-size:clamp(2.6rem,7vw,5rem);letter-spacing:.005em;max-width:14ch;color:var(--ink)}
-  .title em{display:inline-block;font-family:"Mrs Saint Delafield",cursive;font-style:normal;text-transform:none;color:var(--pink);font-size:1.2em;line-height:.6;margin-left:.08em;transform:rotate(-6deg) translateY(.12em);letter-spacing:0}
+  .title em{display:inline-block;font-family:"Astagina Signature",cursive;font-style:normal;text-transform:none;color:var(--pink);font-size:1.2em;line-height:.6;margin-left:.08em;transform:rotate(-6deg) translateY(.12em);letter-spacing:0}
   .lead{color:var(--gray);max-width:56ch;margin-top:22px;font-size:1.05rem}
   .head{margin-bottom:56px}
-  .note{font-family:"Mrs Saint Delafield",cursive;font-size:2rem;color:var(--pink-ink);transform:rotate(-4deg);display:inline-block;margin-top:34px;line-height:1.1}
+  .note{font-family:"Astagina Signature",cursive;font-size:2rem;color:var(--pink-ink);transform:rotate(-4deg);display:inline-block;margin-top:34px;line-height:1.1}
 
   /* Botões em pílula com sombra preta */
   .btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;padding:14px 26px;border-radius:999px;font-family:"Anton",Impact,sans-serif;font-size:1.05rem;letter-spacing:.04em;text-transform:uppercase;text-decoration:none;border:2px solid var(--ink);cursor:pointer;box-shadow:var(--shadow);transition:transform .2s,box-shadow .2s}
@@ -118,7 +119,7 @@
   .dot{width:9px;height:9px;border-radius:50%;background:var(--pink)}
   .hero h1{font-size:clamp(4.2rem,13vw,9.5rem);line-height:.86;color:var(--pink);letter-spacing:.005em}
   .hero h1 .l2{display:block;color:var(--ink)}
-  .hero .sign{display:block;font-family:"Mrs Saint Delafield",cursive;font-size:clamp(2rem,4.4vw,3.2rem);color:var(--ink);line-height:1;margin:-.15em 0 0 30%;padding-bottom:.55em;transform:rotate(-6deg);white-space:nowrap}
+  .hero .sign{display:block;font-family:"Astagina Signature",cursive;font-size:clamp(2rem,4.4vw,3.2rem);color:var(--ink);line-height:1;margin:-.15em 0 0 30%;padding-bottom:.55em;transform:rotate(-6deg);white-space:nowrap}
   .hero-phrase{font-size:clamp(1.02rem,2vw,1.2rem);color:var(--gray);max-width:42ch;margin-top:30px}
   .hero-phrase strong{color:var(--ink);font-weight:600}
   .hero-btns{display:flex;flex-wrap:wrap;gap:16px;margin-top:32px}
@@ -128,7 +129,7 @@
   .hero-stats span{display:block;font-size:.8rem;color:var(--gray);margin-top:6px;line-height:1.3}
   .hero-photo{position:relative;padding:14px 14px 56px;background:#fff;box-shadow:0 20px 40px -18px rgba(0,0,0,.4);transform:rotate(3deg)}
   .hero-photo::before{content:"";position:absolute;top:-16px;left:50%;width:120px;height:32px;margin-left:-60px;background:rgba(255,255,255,.65);border:1px solid rgba(0,0,0,.08);transform:rotate(-4deg);z-index:2}
-  .hero-photo::after{content:"Mônica Masso";position:absolute;bottom:10px;left:0;right:0;text-align:center;font-family:"Mrs Saint Delafield",cursive;font-size:1.5rem;line-height:1;color:var(--pink)}
+  .hero-photo::after{content:"Mônica Masso";position:absolute;bottom:10px;left:0;right:0;text-align:center;font-family:"Astagina Signature",cursive;font-size:1.5rem;line-height:1;color:var(--pink)}
   .hero-photo .ph{aspect-ratio:4/5;width:100%}
   .hero-photo .badge{position:absolute;left:-30px;top:60px;padding:14px 16px;display:flex;align-items:center;gap:10px;font-size:.85rem;line-height:1.3;background:var(--pink);color:#fff;border:0;border-radius:2px;transform:rotate(-7deg);box-shadow:0 10px 20px -8px rgba(0,0,0,.4);z-index:3}
   .hero-photo .badge b{font-family:"Anton",Impact,sans-serif;font-weight:400;font-size:1.15rem;text-transform:uppercase}
@@ -157,8 +158,8 @@
   .promises li{display:flex;align-items:center;gap:14px;padding:8px 0;background:none;border:0;box-shadow:none;border-radius:0;border-bottom:1px solid #eee}
   .promises li:last-child{border-bottom:0}
   .promises .check{flex:none;width:26px;height:26px;border-radius:50%;background:var(--pink-ink);color:#fff;display:grid;place-items:center;font-size:.8rem;font-weight:700}
-  .signature{margin-top:30px;font-family:"Mrs Saint Delafield",cursive;font-size:4.8rem;line-height:1;color:var(--pink);transform:rotate(-4deg);display:inline-block}
-  .signature small{display:block;font-family:"Mrs Saint Delafield",cursive;font-size:1.7rem;color:var(--gray);margin-top:4px}
+  .signature{margin-top:30px;font-family:"Astagina Signature",cursive;font-size:4.8rem;line-height:1;color:var(--pink);transform:rotate(-4deg);display:inline-block}
+  .signature small{display:block;font-family:"Astagina Signature",cursive;font-size:1.7rem;color:var(--gray);margin-top:4px}
 
   /* ===== DESTAQUES ===== */
   .highlights{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:34px}
@@ -174,7 +175,7 @@
   .hl:hover .play{transform:scale(1.08);background:var(--pink)}
   .hl-body{padding:16px 6px 0}
   .hl-num{font-family:"Anton",Impact,sans-serif;font-size:clamp(2.4rem,4vw,3.2rem);color:var(--pink-ink);line-height:1}
-  .hl-label{font-family:"Mrs Saint Delafield",cursive;font-size:1.8rem;color:var(--ink);line-height:1.1;margin-top:2px}
+  .hl-label{font-family:"Astagina Signature",cursive;font-size:1.8rem;color:var(--ink);line-height:1.1;margin-top:2px}
   .hl h3{font-size:1.25rem;margin-top:14px;letter-spacing:.01em}
   .hl p{color:var(--gray);font-size:.9rem;margin-top:6px}
 
@@ -203,7 +204,7 @@
   .vid:hover .play{background:var(--pink)}
   .vid .work-body{display:block}
   .vid-brand{display:block;font-family:"Anton",Impact,sans-serif;text-transform:uppercase;font-size:1.15rem;line-height:1.1;margin-top:8px;color:var(--ink)}
-  .vid-type{display:block;font-family:"Mrs Saint Delafield",cursive;font-size:1.6rem;color:var(--pink-ink);line-height:1.1}
+  .vid-type{display:block;font-family:"Astagina Signature",cursive;font-size:1.6rem;color:var(--pink-ink);line-height:1.1}
   .works-more{text-align:center;margin-top:30px}
   .works-more .btn[hidden]{display:none}
 
@@ -248,7 +249,7 @@
   .metric{padding:24px 22px;border:2px solid var(--ink);border-radius:16px;box-shadow:var(--shadow)}
   .metric strong{display:block;font-family:"Anton",Impact,sans-serif;font-weight:400;font-size:clamp(2.6rem,5vw,3.6rem);line-height:1;color:var(--ink)}
   .metric:nth-child(odd) strong{color:var(--pink-ink)}
-  .metric span{display:block;font-family:"Mrs Saint Delafield",cursive;font-size:1.8rem;color:var(--ink);margin-top:6px;line-height:1.1}
+  .metric span{display:block;font-family:"Astagina Signature",cursive;font-size:1.8rem;color:var(--ink);margin-top:6px;line-height:1.1}
   .subhead{font-size:1.6rem;margin:76px 0 26px;display:flex;align-items:center;gap:16px}
   .subhead::after{content:"";flex:1;height:2px;background:var(--ink)}
   .results{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:26px}
@@ -257,7 +258,7 @@
   .result:nth-child(2){transform:rotate(1.5deg);background:#fff;color:var(--ink)}
   .result:nth-child(3){transform:rotate(-1deg)}
   .result::before{content:"";position:absolute;top:-10px;left:50%;width:18px;height:18px;margin-left:-9px;border-radius:50%;background:var(--ink);box-shadow:inset -3px -3px 0 rgba(255,255,255,.25)}
-  .result-brand{font-family:"Mrs Saint Delafield",cursive;font-size:1.8rem;line-height:1}
+  .result-brand{font-family:"Astagina Signature",cursive;font-size:1.8rem;line-height:1}
   .result strong{display:block;font-family:"Anton",Impact,sans-serif;font-weight:400;font-size:2.8rem;margin-top:10px;line-height:1}
   .result p{margin-top:10px;font-size:.92rem;opacity:.92}
   .testimonials{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px}
@@ -468,7 +469,7 @@
   .hero-invertida{grid-template-columns:.8fr 1.2fr}
   .hero-invertida .hero-photo{order:-1;transform:rotate(-2deg)}
   .hero-photo::after{content:none}
-  .polaroid-sign{position:absolute;bottom:8px;left:0;right:0;text-align:center;font-family:"Mrs Saint Delafield",cursive;font-size:1.9rem;line-height:1.2;color:var(--pink)}
+  .polaroid-sign{position:absolute;bottom:8px;left:0;right:0;text-align:center;font-family:"Astagina Signature",cursive;font-size:1.9rem;line-height:1.2;color:var(--pink)}
   .hero-invertida .hero-photo .badge{left:auto;right:-34px;transform:rotate(6deg)}
   @media (max-width:900px){
     .hero-invertida{grid-template-columns:1fr}
@@ -484,7 +485,7 @@
 
   /* Carrossel de vídeos: fileira horizontal que sai da página, com setas */
   .carousel-bar{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:0}
-  .carousel-hint{font-family:"Mrs Saint Delafield",cursive;font-size:3.2rem;color:var(--gray);line-height:1.05}
+  .carousel-hint{font-family:"Astagina Signature",cursive;font-size:3.2rem;color:var(--gray);line-height:1.05}
   .carousel-hint .hint-num{font-family:"Anton",Impact,sans-serif;text-transform:uppercase;font-size:.62em;letter-spacing:.02em;vertical-align:.12em}
   .carousel-arrows{display:flex;gap:10px;flex:none}
   .carousel-arrow{width:46px;height:46px;border-radius:50%;border:1.5px solid var(--ink);background:#fff;color:var(--ink);font-size:1.6rem;line-height:1;cursor:pointer;display:grid;place-items:center;transition:background .2s,color .2s,opacity .2s}
@@ -596,7 +597,7 @@
     font-size:clamp(3.2rem,min(17.5vh,calc((min(100vw,1180px) - 40px - clamp(28px,4vw,64px)) * .6 / 3.9)),10.4rem);
     line-height:.9;color:var(--pink);text-transform:uppercase;letter-spacing:.005em}
   .hero h1 .h1-palavra{display:block}
-  .hero h1 .h1-assina{position:absolute;right:.02em;bottom:.3em;font-family:"Mrs Saint Delafield",cursive;text-transform:none;letter-spacing:0;font-size:.5em;line-height:1.2;color:var(--ink);transform:rotate(-4deg);transform-origin:right bottom;white-space:nowrap}
+  .hero h1 .h1-assina{position:absolute;right:.02em;bottom:.3em;font-family:"Astagina Signature",cursive;text-transform:none;letter-spacing:0;font-size:.5em;line-height:1.2;color:var(--ink);transform:rotate(-4deg);transform-origin:right bottom;white-space:nowrap}
   @media (max-width:900px){.hero h1{font-size:clamp(2.6rem,14vw,6rem)}}
 
   /* Capa em 3 blocos de escrita: a coluna de textos tem a mesma altura do celular.
@@ -629,7 +630,7 @@
   .sobre-grid{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:clamp(24px,3vw,48px);align-items:center}
   .sobre-texto{display:flex;flex-direction:column;gap:clamp(34px,6.5vh,60px)}
   #sobre-title{position:relative;margin:0;font-size:1rem;line-height:.86;color:var(--ink)}
-  #sobre-title .oi{position:absolute;z-index:2;top:-.25em;left:0;font-family:"Mrs Saint Delafield",cursive;text-transform:none;font-size:clamp(3rem,5vw,4.6rem);line-height:1;color:var(--pink);transform:rotate(-5deg);white-space:nowrap}
+  #sobre-title .oi{position:absolute;z-index:2;top:-.25em;left:0;font-family:"Astagina Signature",cursive;text-transform:none;font-size:clamp(3rem,5vw,4.6rem);line-height:1;color:var(--pink);transform:rotate(-5deg);white-space:nowrap}
   #sobre-title .nome{display:block;padding-top:8px;font-size:clamp(3.4rem,7vw,7rem);letter-spacing:.005em;white-space:nowrap}
   #sobre-title .nome span{display:inline}
   #sobre-title .nome span + span{margin-left:-.15em;color:var(--pink)}
@@ -641,7 +642,7 @@
   .sobre-linhas .spark{width:18px;height:18px;color:var(--pink);flex:none}
   .sobre-linhas .tit{position:relative;display:block;width:max-content;align-self:start;padding-bottom:30px;line-height:1}
   .sobre-linhas .tit b{display:flex;align-items:center;gap:8px;font-family:"Anton",Impact,sans-serif;font-weight:400;text-transform:uppercase;font-size:var(--linha);letter-spacing:.01em;color:var(--ink)}
-  .sobre-linhas .tit em{position:absolute;right:-4px;bottom:-8px;display:block;font-family:"Mrs Saint Delafield",cursive;font-style:normal;font-size:clamp(3rem,4vw,3.5rem);line-height:1;color:var(--pink);white-space:nowrap;transform:rotate(-3deg);transform-origin:right bottom}
+  .sobre-linhas .tit em{position:absolute;right:-4px;bottom:-8px;display:block;font-family:"Astagina Signature",cursive;font-style:normal;font-size:clamp(3rem,4vw,3.5rem);line-height:1;color:var(--pink);white-space:nowrap;transform:rotate(-3deg);transform-origin:right bottom}
   .sobre-linhas .seta{margin-top:calc((var(--linha) - 26px)/2);width:26px;height:26px;border-radius:50%;background:var(--pink);display:grid;place-items:center;box-shadow:0 8px 16px -8px rgba(224,33,143,.7)}
   .sobre-linhas .seta svg{width:14px;height:14px;fill:none;stroke:#fff;stroke-width:3.2;stroke-linecap:round;stroke-linejoin:round}
   .sobre-linhas p{margin:0;transform:translateY(calc(var(--linha)/2 - 50%));color:#8a8a8a;font-size:.8rem;font-weight:300;line-height:1.5}
@@ -773,7 +774,7 @@
   #numeros .print::before{content:"";position:absolute;top:-16px;left:50%;width:96px;height:38px;margin-left:-48px;background:url("img/elementos/fita.png") center/contain no-repeat;transform:rotate(-4deg);z-index:2}
   #numeros .print:nth-child(even)::before{transform:rotate(5deg)}
   #numeros .print img{display:block;width:100%;height:auto;border-radius:10px;box-shadow:0 0 0 1px #ece7e1}
-  #numeros .print figcaption{margin-top:6px;font-family:"Mrs Saint Delafield",cursive;font-size:2.6rem;line-height:1;color:var(--pink-ink);text-align:center}
+  #numeros .print figcaption{margin-top:6px;font-family:"Astagina Signature",cursive;font-size:2.6rem;line-height:1;color:var(--pink-ink);text-align:center}
   #numeros .plat-topo{display:flex;align-items:center;justify-content:space-between;gap:16px}
   #numeros .plat-topo .subhead{margin-bottom:26px}
   #numeros .plataformas{display:flex;gap:22px;overflow-x:auto;scroll-snap-type:x mandatory;scroll-behavior:smooth;overscroll-behavior-x:contain;padding:8px 20px 26px 4px;margin-right:calc(50% - 50vw);scrollbar-width:none;cursor:grab;align-items:flex-start}
@@ -784,7 +785,7 @@
   /* Rodapé: pasta preta de cantos redondos, como nos Destaques */
   .footer{background:var(--ink);color:#f7efe2;padding:clamp(48px,7vh,72px) 0 34px;border-radius:48px 48px 0 0;margin-top:30px}
   .footer .wrap{display:grid;grid-template-columns:1fr auto;gap:22px 30px;align-items:center}
-  .footer .footer-rot{grid-column:1/-1;margin:0;font-family:"Mrs Saint Delafield",cursive;font-size:clamp(3rem,6vw,5rem);line-height:1;color:var(--pink);transform:rotate(-2deg);transform-origin:left center}
+  .footer .footer-rot{grid-column:1/-1;margin:0;font-family:"Astagina Signature",cursive;font-size:clamp(3rem,6vw,5rem);line-height:1;color:var(--pink);transform:rotate(-2deg);transform-origin:left center}
   .footer .logo .logo-nome{color:#f7efe2}
   .footer .logo small{color:#a8a095}
   .footer p:not(.footer-rot){grid-column:1;color:#a8a095;font-size:.88rem;margin:0}
@@ -813,10 +814,10 @@
   .carrossel-folha::before{content:"";position:absolute;top:-16px;left:50%;width:112px;height:42px;margin-left:-56px;background:url("img/elementos/fita.png") center/contain no-repeat;transform:rotate(-4deg);z-index:2}
   .carrossel-folha img{display:block;width:100%;height:auto;border-radius:12px}
   .carrossel-folha figcaption{display:flex;align-items:baseline;justify-content:space-between;gap:12px;padding:10px 6px 2px}
-  .carrossel-folha .rot{font-family:"Mrs Saint Delafield",cursive;font-size:2.7rem;color:var(--pink-ink);line-height:1}
+  .carrossel-folha .rot{font-family:"Astagina Signature",cursive;font-size:2.7rem;color:var(--pink-ink);line-height:1}
   .carrossel-folha small{font-size:.8rem;color:var(--gray)}
   .carrossel-stats .num{font-family:"Anton",Impact,sans-serif;font-size:clamp(2.4rem,4vw,3.4rem);line-height:1;color:var(--pink-ink)}
-  .carrossel-stats > .rot{display:block;font-family:"Mrs Saint Delafield",cursive;font-size:1.9rem;line-height:1;margin:-.3em 0 14px .15em;transform:rotate(-4deg);transform-origin:left center;color:var(--ink)}
+  .carrossel-stats > .rot{display:block;font-family:"Astagina Signature",cursive;font-size:1.9rem;line-height:1;margin:-.3em 0 14px .15em;transform:rotate(-4deg);transform-origin:left center;color:var(--ink)}
   .carrossel-stats ul{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
   .carrossel-stats li{background:rgba(255,255,255,.7);border-radius:12px;padding:8px 10px;box-shadow:0 12px 20px -16px rgba(0,0,0,.4)}
   .carrossel-stats li b{display:block;font-family:"Anton",Impact,sans-serif;font-weight:400;font-size:1.25rem;line-height:1;color:var(--ink)}
@@ -828,7 +829,7 @@
   .foto:nth-child(odd){transform:rotate(-1.6deg)}
   .foto:nth-child(even){transform:rotate(1.4deg) translateY(6px)}
   .foto img{display:block;width:100%;aspect-ratio:4/5;object-fit:cover;border-radius:8px;-webkit-user-drag:none}
-  .foto figcaption{margin-top:4px;font-family:"Mrs Saint Delafield",cursive;font-size:2.1rem;line-height:1;color:var(--pink-ink);text-align:center}
+  .foto figcaption{margin-top:4px;font-family:"Astagina Signature",cursive;font-size:2.1rem;line-height:1;color:var(--pink-ink);text-align:center}
   /* Bastidores: caderno com os equipamentos e os cenários */
   #bastidores .equip-grade{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:30px 24px;margin-top:40px;padding-top:10px}
   .equip{position:relative;margin:0;background:#fff;border-radius:20px;padding:30px 16px 18px;text-align:center;box-shadow:0 22px 32px -22px rgba(0,0,0,.42)}
@@ -851,7 +852,7 @@
   .t-ilum{left:58.2%;top:4.2%;width:11%;height:12.5%;background:#eeeeec}
   .t-tripe{left:17.4%;top:41.2%;width:10.4%;height:11.2%;background:linear-gradient(90deg,#fff 0,#fff 34%,#fafaf9 100%)}
   .t-lark{left:25.6%;top:60.2%;width:24.2%;height:10.6%;background:#fafaf9}
-  .caderno-iphone{position:absolute;z-index:2;left:71.5%;top:66.5%;width:20%;font-family:"Mrs Saint Delafield",cursive;font-size:clamp(1rem,1.7vw,1.5rem);line-height:1;text-align:center;color:#141414;transform:rotate(-3deg)}
+  .caderno-iphone{position:absolute;z-index:2;left:71.5%;top:66.5%;width:20%;font-family:"Astagina Signature",cursive;font-size:clamp(1rem,1.7vw,1.5rem);line-height:1;text-align:center;color:#141414;transform:rotate(-3deg)}
   @media (max-width:900px){#bastidores .equip-bloco{grid-template-columns:1fr}}
   #bastidores .caderno img{display:block;width:100%;height:auto}
   .equip-lista{list-style:none;display:grid;gap:12px;justify-items:start;margin:0;padding:0}
@@ -874,7 +875,7 @@
   .pacote:nth-child(1){transform:rotate(-2deg)}
   .pacote:nth-child(2){transform:rotate(1.2deg) translateY(10px)}
   .pacote:nth-child(3){transform:rotate(-1deg)}
-  .pacote .rot{font-family:"Mrs Saint Delafield",cursive;font-size:4.2rem;line-height:1;color:var(--pink)}
+  .pacote .rot{font-family:"Astagina Signature",cursive;font-size:4.2rem;line-height:1;color:var(--pink)}
   .pacote .num{font-family:"Anton",Impact,sans-serif;font-weight:400;text-transform:uppercase;font-size:1.7rem;color:var(--ink)}
   .pacote .preco{font-size:3.6rem;margin-top:6px}
   .valores-duas{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:26px;margin-top:40px}
@@ -895,7 +896,7 @@
   .unitario .preco{font-size:2.1rem}
   #valores .diferenca{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:26px}
   .dif{background:var(--ink);color:#f7efe2;border-radius:28px;padding:26px 28px}
-  .dif .rot{display:block;font-family:"Mrs Saint Delafield",cursive;font-size:2.8rem;line-height:1;color:var(--pink);margin-bottom:16px}
+  .dif .rot{display:block;font-family:"Astagina Signature",cursive;font-size:2.8rem;line-height:1;color:var(--pink);margin-bottom:16px}
   .dif ul{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:10px}
   .dif li{padding:9px 18px;border-radius:999px;border:1px solid #3d3d3d;font-size:.9rem}
   /* Pacote estratégico: bloco de destaque, com tema da temporada (natal ou black) */
@@ -908,7 +909,7 @@
   .est-eyebrow{display:inline-flex;align-items:center;gap:8px;margin:12px 0 0;font-family:"Anton",Impact,sans-serif;text-transform:uppercase;letter-spacing:.14em;font-size:.85rem;color:var(--ouro)}
   .est-eyebrow .spark{width:.9em;height:.9em}
   .est-titulo{position:relative;margin:10px 0 0;font-family:"Anton",Impact,sans-serif;font-weight:400;text-transform:uppercase;font-size:clamp(2.6rem,6vw,4.6rem);line-height:1;color:var(--tx)}
-  .est-titulo em{display:inline-block;font-family:"Mrs Saint Delafield",cursive;font-style:normal;text-transform:none;color:var(--ouro);font-size:1.25em;line-height:.8;margin-left:.08em;transform:rotate(-4deg)}
+  .est-titulo em{display:inline-block;font-family:"Astagina Signature",cursive;font-style:normal;text-transform:none;color:var(--ouro);font-size:1.25em;line-height:.8;margin-left:.08em;transform:rotate(-4deg)}
   .est-lead{margin:16px auto 0;color:rgba(247,239,226,.82);font-size:1rem;line-height:1.65}
   .estrategico .funil{gap:22px}
   .estrategico .etapa{background:var(--tx);color:var(--ink);border-radius:22px;box-shadow:0 20px 30px -22px rgba(0,0,0,.7)}
