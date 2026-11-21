@@ -976,6 +976,12 @@
   .tt-videos-titulo .spark{color:var(--pink);width:.8em;height:.8em}
   .tt-videos-sub{margin:8px 0 26px;color:var(--gray);font-size:.9rem}
   .tt-videos-fila{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:22px}
+  .tt-item{min-width:0}
+  .tt-item .vid{width:100%;flex:none}
+  .tt-meta{display:flex;flex-direction:column;gap:3px;margin:8px 0 0;text-align:center;font-size:.8rem;color:var(--gray)}
+  .tt-meta b{color:var(--ink);font-weight:600}
+  .tt-meta a{color:var(--gray);text-decoration:none;border-bottom:1px solid #cfcfcf;align-self:center}
+  .tt-meta a:hover{color:var(--ink);border-color:var(--ink)}
   .tt-video{margin:0}
   .tt-video-quadro{position:relative;aspect-ratio:325/575;border-radius:22px;overflow:hidden;background:#141414;box-shadow:0 22px 34px -22px rgba(0,0,0,.55)}
   .tt-video-quadro iframe{position:absolute;inset:0;width:100%;height:100%;border:0;z-index:2}
@@ -998,7 +1004,7 @@
   @media (max-width:900px){
     .tt-videos-fila{display:flex;gap:14px;overflow-x:auto;scroll-snap-type:x mandatory;margin-right:calc(50% - 50vw);padding:2px 20px 14px 0;scrollbar-width:none}
     .tt-videos-fila::-webkit-scrollbar{display:none}
-    .tt-video{flex:0 0 min(64vw,260px);scroll-snap-align:start}
+    .tt-item{flex:0 0 min(64vw,260px);scroll-snap-align:start}
   }
   .influ-bloco.tt-bloco{align-items:stretch}
   .tt-bloco .influ-esq{grid-template-rows:1fr}
@@ -1436,7 +1442,7 @@
       </section>
       <div class="tt-videos reveal" aria-labelledby="ttVideosTitulo">
         <h4 class="tt-videos-titulo" id="ttVideosTitulo"><span class="spark" aria-hidden="true"></span>Vídeos que mais venderam</h4>
-        <p class="tt-videos-sub">Vídeos nativos reais do meu TikTok Shop. Toque no play para assistir aqui mesmo.</p>
+        <p class="tt-videos-sub">Vídeos nativos reais do meu TikTok Shop. Toque no vídeo para assistir.</p>
         <div class="tt-videos-fila" id="ttVideos"></div>
         <p class="tt-videos-nota" id="ttVideosNota"></p>
       </div>
@@ -1891,14 +1897,14 @@ const INSTA = {
 };
 /* TikTok Shop (Central de Afiliados do app, 19 out a 17 nov de 2026). Atualize quando quiser. */
 const TIKTOK = {
-  /* Vídeos que mais venderam: "id" é o número no final do link do vídeo no TikTok. Para trocar, edite esta lista. */
+  /* Vídeos que mais venderam. "yt" = código do vídeo no YouTube (não listado), "tt" = número no final do link do vídeo no TikTok. */
   videos: [
-    { id: "7698558207463148821", produto: "Travesseiro Fresh", venda: "R$ 2,0 mil em vendas", itens: "4 itens" },
-    { id: "7689939853718342933", produto: "Jogo de toalhas", venda: "R$ 1,6 mil em vendas", itens: "5 itens" },
-    { id: "7706996899349400850", produto: "Capa de iPhone", venda: "R$ 1,4 mil em vendas", itens: "47 itens", total: "+600 capas vendidas no total" },
-    { id: "7705790890073181461", produto: "Edredom", venda: "R$ 1,1 mil em vendas", itens: "2 itens" }
+    { yt: "ZI2nOWm-aew", tt: "7706263862013676818", produto: "Capinha de iPhone", vendas: "+600 vendidas", views: "533 mil" },
+    { yt: "K6cyYxksris", tt: "7677960531046599957", produto: "Rímel Colossal", vendas: "+120 vendidos", views: "186 mil" },
+    { yt: "3KkkikR3bZI", tt: "7701408530263264520", produto: "Caderno", vendas: "+60 vendidos", views: "30 mil" },
+    { yt: "dy7V3oG-6_A", tt: "7696175949674466581", produto: "Travesseiro", vendas: "+30 vendidos", views: "18 mil" }
   ],
-  videosNota: "Valores de vendas por vídeo conforme a Análise de receita da Central de Afiliados do TikTok Shop (pedidos líquidos).",
+  videosNota: "Visualizações conforme o TikTok Studio. Produtos vendidos: total do TikTok Shop nos últimos 30 dias (19 out a 17 nov de 2026), somando as versões de cada produto.",
   data: "19 out a 17 nov de 2026",
   nota: "Números reais da Central de Afiliados do TikTok Shop (últimos 30 dias), sem alteração manual. GMV atribuído é o valor vendido a partir dos meus vídeos. Taxas, ticket médio e categorias calculados automaticamente a partir dos dados obtidos (cliques por impressão = cliques ÷ impressões; compras por clique = itens vendidos ÷ cliques; ticket médio = GMV ÷ itens vendidos).",
   numeros: [
@@ -2267,20 +2273,25 @@ if (celularNichos.matches) {
 /* Player: abre o vídeo grande, na tela, no lugar de mandar a pessoa para o YouTube.
    O YouTube escolhe a qualidade sozinho pelo tamanho do player e pela internet de quem assiste. */
 const player = $("#player"), playerFrame = $("#playerFrame"), playerCap = $("#playerCap");
-let atual = 0, voltarFoco = null;
+let atual = 0, voltarFoco = null, fonte = lista;
 function tocar(i) {
-  atual = (i + lista.length) % lista.length;
-  const v = lista[atual];
+  atual = (i + fonte.length) % fonte.length;
+  const v = fonte[atual];
   playerFrame.innerHTML = `<iframe src="https://www.youtube-nocookie.com/embed/${encodeURIComponent(v.id)}?autoplay=1&playsinline=1&rel=0&modestbranding=1" title="Vídeo ${esc(v.tipo)} para ${esc(v.marca)}" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen></iframe>`;
-  playerCap.innerHTML = `<b>${esc(v.marca)}</b> · ${esc(v.tipo)} <span>${atual + 1} de ${lista.length}</span>`;
+  playerCap.innerHTML = `<b>${esc(v.marca)}</b> · ${esc(v.extra ? v.extra + " · " + v.tipo : v.tipo)} <span>${atual + 1} de ${fonte.length}</span>`;
 }
-function abrirPlayer(i) {
+function abrirPlayer(i, origem) {
+  fonte = origem || lista;
   voltarFoco = document.activeElement;
   player.hidden = false;
   document.body.style.overflow = "hidden";
   tocar(i);
   $("#playerClose").focus();
 }
+$("#ttVideos").addEventListener("click", (e) => {
+  const card = e.target.closest(".vid");
+  if (card) abrirPlayer(+card.dataset.i, listaTT);
+});
 function fecharPlayer() {
   player.hidden = true;
   playerFrame.innerHTML = "";
@@ -2436,38 +2447,13 @@ $("#ttNum").innerHTML = TIKTOK.numeros.map((x) => `<div><strong class="num">${es
 const barrasTxt = (arr) => { const max = Math.max(...arr.map((x) => x.v)); return arr.map((x) => `<div class="barra"><span>${esc(x.l)}</span><i style="--w:${(x.v / max * 100).toFixed(0)}%"></i><b>${esc(x.t || String(x.v).replace(".", ",") + "%")}</b></div>`).join(""); };
 $("#ttProdutos").innerHTML = barrasTxt(TIKTOK.produtos);
 $("#ttCategorias").innerHTML = barrasTxt(TIKTOK.categorias);
-$("#ttVideos").innerHTML = TIKTOK.videos.map((v) => `
-  <figure class="tt-video" data-id="${esc(v.id)}">
-    <div class="tt-video-quadro">
-      <button type="button" class="tt-capa" aria-label="Assistir o vídeo de ${esc(v.produto)}">
-        <span class="tt-tag">TikTok Shop</span>
-        <span class="tt-play" aria-hidden="true"></span>
-        <span class="tt-prod">${esc(v.produto)}</span>
-        <span class="tt-toque">Toque para assistir</span>
-      </button>
-    </div>
-    <figcaption>
-      <b>${esc(v.produto)}</b><span>${esc(v.venda)} · ${esc(v.itens)}</span>
-      ${v.total ? `<em>${esc(v.total)}</em>` : ""}
-      <a href="https://www.tiktok.com/@monicamasso_/video/${esc(v.id)}" target="_blank" rel="noopener">Abrir no TikTok ↗</a>
-    </figcaption>
-  </figure>`).join("");
-/* Só carrega o player do TikTok quando a pessoa toca (um por vez), para não falhar com vários juntos */
-$("#ttVideos").addEventListener("click", (e) => {
-  const capa = e.target.closest(".tt-capa");
-  if (!capa) return;
-  const lista = $("#ttVideos");
-  lista.querySelectorAll(".tt-video.tocando").forEach((f) => { f.classList.remove("tocando"); f.querySelector("iframe")?.remove(); });
-  const fig = capa.closest(".tt-video");
-  const quadro = fig.querySelector(".tt-video-quadro");
-  const f = document.createElement("iframe");
-  f.src = "https://www.tiktok.com/embed/v2/" + fig.dataset.id;
-  f.title = "Vídeo de " + fig.querySelector("figcaption b").textContent + " no TikTok";
-  f.allow = "fullscreen; autoplay";
-  f.allowFullscreen = true;
-  quadro.appendChild(f);
-  fig.classList.add("tocando");
-});
+/* Vídeos do TikTok Shop: mesmo cartão e mesmo player dos vídeos UGC (YouTube, não listado) */
+const listaTT = TIKTOK.videos.map((v) => ({ id: v.yt, marca: v.produto, tipo: v.vendas, nicho: "TikTok Shop", extra: "TikTok Shop" }));
+$("#ttVideos").innerHTML = TIKTOK.videos.map((v, i) => `
+  <div class="tt-item">
+    ${cardVideo(listaTT[i], i)}
+    <p class="tt-meta"><span><b>${esc(v.views)}</b> visualizações</span><ahref="https://www.tiktok.com/@monicamasso_/video/${esc(v.tt)}" target="_blank" rel="noopener">Ver no TikTok ↗</a></p>
+  </div>`).join("");
 $("#ttVideosNota").textContent = TIKTOK.videosNota;
 $("#ttFunil").innerHTML = TIKTOK.funil.map((x) => `<div class="tt-linha"><span>${esc(x.l)}</span><b>${esc(x.v)}</b></div>`).join("");
 $("#ttTarifa").innerHTML = TIKTOK.tarifa.map((x) => `<div class="influ-linha"><div><b>${esc(x.nome)}</b><small>${esc(x.detalhe)}</small></div><strong class="preco">${esc(x.preco)}<small class="un">${esc(x.un)}</small></strong></div>`).join("");
