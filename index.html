@@ -2452,7 +2452,7 @@ const listaTT = TIKTOK.videos.map((v) => ({ id: v.yt, marca: v.produto, tipo: v.
 $("#ttVideos").innerHTML = TIKTOK.videos.map((v, i) => `
   <div class="tt-item">
     ${cardVideo(listaTT[i], i)}
-    <p class="tt-meta"><span><b>${esc(v.views)}</b> visualizações</span><ahref="https://www.tiktok.com/@monicamasso_/video/${esc(v.tt)}" target="_blank" rel="noopener">Ver no TikTok ↗</a></p>
+    <p class="tt-meta"><span><b>${esc(v.views)}</b> visualizações</span><a href="https://www.tiktok.com/@monicamasso_/video/${esc(v.tt)}" target="_blank" rel="noopener">Ver no TikTok ↗</a></p>
   </div>`).join("");
 $("#ttVideosNota").textContent = TIKTOK.videosNota;
 $("#ttFunil").innerHTML = TIKTOK.funil.map((x) => `<div class="tt-linha"><span>${esc(x.l)}</span><b>${esc(x.v)}</b></div>`).join("");
@@ -2520,9 +2520,12 @@ function handleForm(form, success) {
       return;
     }
     botao.disabled = true;
+    const limite = new AbortController();
+    const prazo = setTimeout(() => limite.abort(), 15000);
     try {
       const r = await fetch("https://formsubmit.co/ajax/ugcmonicamasso@gmail.com", {
         method: "POST",
+        signal: limite.signal,
         headers: { "Content-Type": "application/json", Accept: "application/json" },
         body: JSON.stringify({
           _subject: "Novo contato pelo portfólio",
@@ -2537,10 +2540,12 @@ function handleForm(form, success) {
       const dados = await r.json().catch(() => ({}));
       if (!r.ok || dados.success === "false" || dados.success === false) throw new Error("envio");
     } catch (err) {
+      clearTimeout(prazo);
       botao.disabled = false;
       erro.hidden = false;
       return;
     }
+    clearTimeout(prazo);
     form.hidden = true;
     success.classList.add("show");
     success.focus();
