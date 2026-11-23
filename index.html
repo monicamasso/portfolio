@@ -1025,6 +1025,23 @@
   .tt-video figcaption b{font-family:"Anton",Impact,sans-serif;font-weight:400;text-transform:uppercase;font-size:1.15rem;letter-spacing:.01em}
   .tt-video figcaption span{color:var(--pink);font-weight:600;font-size:.85rem}
   .tt-videos-nota{margin:20px 0 0;color:var(--gray);font-size:.78rem;line-height:1.6}
+  /* Vídeos que mais venderam, dentro do painel preto do TikTok Shop */
+  #ttPainel .tt-videos{margin-top:46px;padding-top:30px;border-top:1px solid #2c2c2c}
+  #ttPainel .tt-videos-titulo{font-size:1rem;letter-spacing:.06em;color:#f7efe2}
+  #ttPainel .tt-videos-sub{color:#cfc8bc}
+  #ttPainel .tt-meta{color:#cfc8bc}
+  #ttPainel .tt-meta b{color:#fff}
+  #ttPainel .tt-meta a{color:#cfc8bc;border-color:#555}
+  #ttPainel .tt-meta a:hover{color:#fff;border-color:#fff}
+  #ttPainel .tt-videos-nota{color:#8f887c}
+  /* Logos nos cabeçalhos 02 e 03 */
+  .area{grid-template-columns:auto auto minmax(0,1fr)}
+  .area-titulo{display:flex;align-items:center;gap:.4em;flex-wrap:nowrap;white-space:nowrap}
+  @media (max-width:760px){.area{grid-template-columns:auto minmax(0,1fr)}.area-titulo{flex-wrap:wrap;white-space:normal}}
+  @media (max-width:900px){#ttPainel .tt-videos-fila{margin-right:calc(-1 * clamp(28px,4vw,46px));padding-right:clamp(28px,4vw,46px)}}
+  .area-logo{display:inline-grid;place-items:center;width:.95em;height:.95em;flex:none}
+  .area-logo svg{width:100%;height:100%;display:block}
+  .area-tt .area-logo svg{filter:drop-shadow(-.045em -.045em 0 #25f4ee) drop-shadow(.045em .045em 0 #fe2c55)}
   @media (max-width:900px){
     .tt-videos-fila{display:flex;gap:14px;overflow-x:auto;scroll-snap-type:x mandatory;margin-right:calc(50% - 50vw);padding:2px 20px 14px 0;scrollbar-width:none}
     .tt-videos-fila::-webkit-scrollbar{display:none}
@@ -1436,7 +1453,7 @@
       </section>
       <div class="area area-influ reveal">
         <span class="area-num" aria-hidden="true">02</span>
-        <div><p class="area-eyebrow">Instagram</p><h3 class="area-titulo">Influencer digital</h3></div>
+        <div><p class="area-eyebrow">Instagram</p><h3 class="area-titulo">Influencer digital <span class="area-logo" role="img" aria-label="Instagram"><svg viewBox="0 0 24 24" aria-hidden="true"><defs><linearGradient id="igGrad" x1="0" y1="1" x2="1" y2="0"><stop offset="0" stop-color="#feda75"/><stop offset=".3" stop-color="#fa7e1e"/><stop offset=".55" stop-color="#d62976"/><stop offset=".8" stop-color="#962fbf"/><stop offset="1" stop-color="#4f5bd5"/></linearGradient></defs><rect width="24" height="24" rx="6.5" fill="url(#igGrad)"/><g fill="none" stroke="#fff" stroke-width="1.9"><rect x="5" y="5" width="14" height="14" rx="4.2"/><circle cx="12" cy="12" r="3.4"/></g><circle cx="16.6" cy="7.4" r="1.1" fill="#fff"/></svg></span></h3></div>
         <p class="area-desc">Conteúdo publicado no meu Instagram, em colaboração com a marca, para compartilharmos o engajamento e a audiência.</p>
       </div>
       <section class="insta reveal" id="insta" aria-labelledby="insta-titulo">
@@ -1460,7 +1477,7 @@
       </div>
       <div class="area area-tt reveal">
         <span class="area-num" aria-hidden="true">03</span>
-        <div><p class="area-eyebrow">TikTok</p><h3 class="area-titulo">TikTok Shop</h3></div>
+        <div><p class="area-eyebrow">TikTok</p><h3 class="area-titulo">TikTok Shop <span class="area-logo" role="img" aria-label="TikTok"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#fff" d="M19.6 6.7a4.7 4.7 0 0 1-3.7-4.2V2h-3.4v13.4a2.8 2.8 0 1 1-2-2.7V9.2a6.2 6.2 0 1 0 5.4 6.2V9a8 8 0 0 0 4.7 1.5V7.1a4.7 4.7 0 0 1-1-.4z"/></svg></span></h3></div>
         <p class="area-desc">Vídeos nativos no meu TikTok Shop, com comissão sobre as vendas.</p>
       </div>
       <div class="influ-bloco tt-bloco">
@@ -1477,14 +1494,14 @@
           <div class="insta-col"><h5>Categorias (% do GMV)</h5><div id="ttCategorias" style="--lbl:150px"></div></div>
           <div class="insta-col"><h5>Funil de vendas</h5><div id="ttFunil"></div></div>
         </div>
+        <div class="tt-videos" aria-labelledby="ttVideosTitulo">
+          <h4 class="tt-videos-titulo" id="ttVideosTitulo"><span class="spark" aria-hidden="true"></span>Vídeos que mais venderam</h4>
+          <p class="tt-videos-sub">Vídeos nativos reais do meu TikTok Shop. Toque no vídeo para assistir.</p>
+          <div class="tt-videos-fila" id="ttVideos"></div>
+          <p class="tt-videos-nota" id="ttVideosNota"></p>
+        </div>
         <p class="insta-rodape" id="ttNota"></p>
       </section>
-      <div class="tt-videos reveal" aria-labelledby="ttVideosTitulo">
-        <h4 class="tt-videos-titulo" id="ttVideosTitulo"><span class="spark" aria-hidden="true"></span>Vídeos que mais venderam</h4>
-        <p class="tt-videos-sub">Vídeos nativos reais do meu TikTok Shop. Toque no vídeo para assistir.</p>
-        <div class="tt-videos-fila" id="ttVideos"></div>
-        <p class="tt-videos-nota" id="ttVideosNota"></p>
-      </div>
     </div>
   </section>
   <!-- ===================== 6. NÚMEROS E DEPOIMENTOS ===================== -->
