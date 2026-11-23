@@ -1342,8 +1342,7 @@
         <h2 class="title" id="bastidores-title"><em>O que eu uso</em>pra gravar</h2>
       </div>
       <div class="equip-grade" id="equipGrade"></div>
-      <!-- LEMBRETE: seção "Onde eu gravo" escondida até ter as fotos dos ambientes. Para voltar, apague o atributo hidden abaixo. -->
-      <div id="cenariosBloco" hidden>
+      <div id="cenariosBloco">
       <h3 class="subhead reveal">Onde eu gravo</h3>
       <p class="cenarios-intro reveal">Ambientes reais onde eu gravo, para o seu produto aparecer na rotina de verdade.</p>
       <div class="cenarios" id="cenariosLista"></div>
@@ -1869,13 +1868,14 @@ const EQUIPAMENTOS = [
 ];
 /* Cenários: para colocar a foto, escreva o caminho em "foto" (ex.: "img/cenarios/quarto.jpg"). Sem foto, aparece o espaço reservado. */
 const CENARIOS = [
-  { nome: "Quarto", emoji: "🛏️", foto: "" },
-  { nome: "Banheiro", emoji: "🛁", foto: "" },
-  { nome: "Escritório", emoji: "💻", foto: "" },
-  { nome: "Sala de jantar", emoji: "🍽️", foto: "" },
-  { nome: "Sala de TV", emoji: "📺", foto: "" },
-  { nome: "Cozinha", emoji: "🍳", foto: "" },
-  { nome: "Varanda", emoji: "🌿", foto: "" },
+  { nome: "Sala de estar", emoji: "🛋️", foto: "img/cenarios/sala-de-estar.jpg" },
+  { nome: "Sala de jantar", emoji: "🍽️", foto: "img/cenarios/sala-de-jantar.jpg" },
+  { nome: "Cozinha", emoji: "🍳", foto: "img/cenarios/cozinha.jpg" },
+  { nome: "Varanda gourmet", emoji: "🌿", foto: "img/cenarios/varanda.jpg" },
+  { nome: "Sala de TV", emoji: "📺", foto: "img/cenarios/sala-de-tv.jpg" },
+  { nome: "Quarto", emoji: "🛏️", foto: "img/cenarios/quarto.jpg" },
+  { nome: "Banheiro", emoji: "🛁", foto: "img/cenarios/banheiro.jpg" },
+  { nome: "Escritório", emoji: "💻", foto: "img/cenarios/escritorio.jpg" },
   { nome: "Canteiro em frente ao apê", emoji: "🌳", foto: "" },
   { nome: "Piscina", emoji: "🏊‍♀️", foto: "" },
   { nome: "Academia Bluefit", emoji: "🏋️‍♀️", foto: "" }
@@ -2404,7 +2404,7 @@ $("#equipGrade").innerHTML = EQUIPAMENTOS.map((e) => `
     <div class="equip-img"><img src="${esc(e.img)}" alt="${esc(e.alt)}" loading="lazy"></div>
     <figcaption><span class="rot">${esc(e.nome)}</span><small>${esc(e.uso)}</small></figcaption>
   </figure>`).join("");
-$("#cenariosLista").innerHTML = CENARIOS.map((c) => `
+$("#cenariosLista").innerHTML = CENARIOS.filter((c) => c.foto).map((c) => `
   <figure class="cenario reveal">
     ${c.foto ? `<img src="${esc(c.foto)}" alt="Cenário: ${esc(c.nome)}" loading="lazy">` : `<div class="cenario-vazio" role="img" aria-label="Foto do cenário ${esc(c.nome)} em breve"><span class="cenario-emoji" aria-hidden="true">${c.emoji}</span><span class="ph-tag">foto em breve</span></div>`}
     <figcaption>${esc(c.nome)}</figcaption>
