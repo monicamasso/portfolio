@@ -937,9 +937,9 @@
   .extras-sub{margin:0 0 22px;color:var(--gray);font-size:.9rem}
   .extras-lista{display:grid;gap:14px}
   .extra-linha{display:grid;grid-template-columns:340px minmax(0,1fr);gap:26px;align-items:center}
-  .extra-card{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:nowrap;background:#fff;border-radius:999px;padding:12px 24px;box-shadow:0 12px 20px -16px rgba(0,0,0,.4)}
+  .extra-card{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:nowrap;background:#fff;border-radius:999px;padding:12px 24px;box-shadow:0 12px 20px -16px rgba(0,0,0,.4)}
   .extra-card b{font-size:.88rem;font-weight:600;line-height:1.25;flex:1 1 110px}
-  .extra-card .preco{font-size:1.7rem;flex:none;width:2.66em;text-align:left;margin-right:-8px}
+  .extra-card .preco{font-size:1.55rem;flex:none;width:3.1em;text-align:left;margin-right:-8px;white-space:nowrap}
   .extra-card small{width:auto;margin:0 -4px 0 0;color:var(--gray);font-size:.75rem;white-space:nowrap;flex:none}
   .extra-linha p{margin:0;color:#555;font-size:.9rem;line-height:1.6}
   .extras-nota{margin:22px 0 0;color:var(--gray);font-size:.85rem}
@@ -1972,7 +1972,10 @@ const VALORES = {
     { nome: "CTA (final)", preco: "R$ 30", nota: "cada", texto: "Chamada final para ação, no fim do vídeo. Segue a mesma cena e a mesma edição do vídeo base; edições diferenciadas têm valor adicional." },
     { nome: "Versão horizontal", preco: "R$ 200", nota: "", texto: "O mesmo vídeo no formato horizontal, seguindo o roteiro do original. Se for outro roteiro, é cobrado como um novo vídeo." },
     { nome: "Vídeos crus", preco: "R$ 100", nota: "", texto: "O material bruto, sem edição final. Precisa de edição básica para ser compartilhado, com ajuste de áudio e cortes de início e fim." },
-    { nome: "Adicional de 3 meses de ADS", preco: "R$ 100", nota: "", texto: "Mais 3 meses de uso da minha imagem em tráfego pago, além do período incluso no pacote." }
+    { nome: "Adicional de 3 meses de ADS", preco: "R$ 100", nota: "", texto: "Mais 3 meses de uso da minha imagem em tráfego pago, além do período incluso no pacote." },
+    { nome: "Diária de gravação", preco: "R$ 3.000", nota: "", texto: "Um dia inteiro de gravação, com até 10 vídeos produzidos." },
+    { nome: "Taxa de assistente", preco: "R$ 300", nota: "", texto: "Assistente na produção, para gravar mais vídeos em gravações externas ou diárias." },
+    { nome: "Deslocamento / diária", preco: "R$ 500", nota: "", texto: "Cobrado nas gravações externas." }
   ],
   extrasNota: "Vídeos presenciais serão acrescidos de taxa de deslocamento (a depender do endereço).",
   influ: [
