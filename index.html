@@ -566,6 +566,8 @@
   .brands li::after{content:none}
   .brands li img{display:block;box-sizing:content-box;height:40px;width:auto;max-width:130px;padding:0;background:none;border-radius:0;box-shadow:none;object-fit:contain;filter:grayscale(1);opacity:.62;transition:filter .3s,opacity .3s}
   .brands li:hover img{filter:none;opacity:1}
+  .brands li img.cor{filter:none;opacity:1}
+  .brands li img.grande{height:54px}
 
   /* Botões: estilo "preto com brilho" (principal preto com estrela rosa, secundário branco com contorno fino) */
   .btn{gap:10px;padding:15px 30px;border:0;border-radius:999px;box-shadow:none;font-family:"Poppins",sans-serif;font-weight:600;font-size:.95rem;letter-spacing:0;text-transform:none}
@@ -1566,13 +1568,13 @@ const MARCAS = [
    silhueta: só para logos que tinham fundo colorido: versão só com a forma do logo, em escuro, sem o fundo.
              É ela que aparece na faixa, em cinza. Os outros logos ganham a cor da marca ao passar o mouse.
    Para colocar uma marca nova: salve o logo em img/marcas e copie uma linha abaixo. */const LOGOS_FAIXA = [
-  { marca: "Mercado Livre",   logo: "img/marcas/mercado-livre.png", silhueta: "img/marcas/mercado-livre-sil.png" },
+  { marca: "Mercado Livre",   logo: "img/marcas/mercado-livre.png", silhueta: "img/marcas/mercado-livre-cor.png", colorido: true },
   { marca: "L’Oréal Paris",   logo: "img/marcas/loreal-paris.png" },
   { marca: "Montana Grill",   logo: "img/marcas/montana-grill.png", silhueta: "img/marcas/montana-grill-sil.png" },
   { marca: "Dove",            logo: "img/marcas/dove.png" },
   { marca: "YoPRO (Danone)",  logo: "img/marcas/yopro.png", silhueta: "img/marcas/yopro-sil.png" },
   { marca: "Itaipava",        logo: "img/marcas/itaipava.png" },
-  { marca: "Porto Bank",      logo: "img/marcas/porto-bank.png", silhueta: "img/marcas/porto-bank-sil.png" },
+  { marca: "Porto Bank",      logo: "img/marcas/porto-bank.png", silhueta: "img/marcas/porto-bank-cor.png", colorido: true },
   { marca: "Bed Head",        logo: "img/marcas/bed-head.png" },
   { marca: "Flora Amar",      logo: "img/marcas/flora-amar.png", silhueta: "img/marcas/flora-amar-sil.png" },
   { marca: "Copacol",         logo: "img/marcas/copacol.png" },
@@ -1582,7 +1584,7 @@ const MARCAS = [
   { marca: "Bluefit",         logo: "img/marcas/bluefit.png" },
   { marca: "Bioré",           logo: "img/marcas/biore.png" },
   { marca: "Gummy",           logo: "img/marcas/gummy.png" },
-  { marca: "Frango Assado",   logo: "img/marcas/frango-assado.png" },
+  { marca: "Frango Assado",   logo: "img/marcas/frango-assado.png", grande: true },
   { marca: "Nutrata",         logo: "img/marcas/nutrata.png" },
   { marca: "Brinox",          logo: "img/marcas/brinox.png" },
   { marca: "Coza",            logo: "img/marcas/coza.png" },
@@ -2032,7 +2034,7 @@ const cover = (src, tag, alt) => src
 
 /* Faixa de marcas (lista duplicada para o movimento contínuo) */
 const logoList = LOGOS_FAIXA.map((l) =>
-  `<li><img src="${esc(l.silhueta || l.logo)}" alt="${esc(l.marca)}" height="40" decoding="async"></li>`
+  `<li><img${l.colorido ? ' class="cor"' : l.grande ? ' class="grande"' : ""} src="${esc(l.silhueta || l.logo)}" alt="${esc(l.marca)}" height="40" decoding="async"></li>`
 ).join("");
 $("#brandsTrack").innerHTML = `<ul>${logoList}</ul><ul aria-hidden="true">${logoList}</ul>`;
 
