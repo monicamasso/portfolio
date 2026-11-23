@@ -961,6 +961,10 @@
   .insta-num > div + div{border-left:1px solid #2c2c2c}
   .insta-num strong{display:block;font-family:"Anton",Impact,sans-serif;font-weight:400;font-size:clamp(1.8rem,2.8vw,2.5rem);line-height:1;color:var(--pink);white-space:nowrap}
   .insta-num span{display:block;margin-top:8px;font-size:.78rem;color:#cfc8bc;line-height:1.35}
+  /* Nível do TikTok Shop em destaque: bloco rosa */
+  .insta-num > div.destaque{background:var(--pink);border-left:0!important;border-radius:18px;padding:10px 10px 12px;margin:-6px 0 -6px 12px;box-shadow:0 14px 28px -14px rgba(224,33,143,.8)}
+  .insta-num > div.destaque strong{color:#fff}
+  .insta-num > div.destaque span{color:#fff;font-weight:500}
   .insta-publico{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:40px 90px;margin-top:30px}
   .insta-col h5{margin:0 0 16px;font-family:"Anton",Impact,sans-serif;font-weight:400;text-transform:uppercase;letter-spacing:.06em;font-size:1rem;color:#f7efe2}
   .insta-rodape{margin:30px 0 0;padding-top:18px;border-top:1px solid #2c2c2c;color:#8f887c;font-size:.74rem;line-height:1.6}
@@ -1920,7 +1924,7 @@ const TIKTOK = {
     { n: "965", r: "itens vendidos (+461%)" },
     { n: "1,3 mi", r: "impressões de produto" },
     { n: "72,6 mil", r: "cliques no produto" },
-    { n: "Nível 3", r: "no TikTok Shop" }
+    { n: "Nível 3", r: "no TikTok Shop", destaque: true }
   ],
   produtos: [{ l: "Capa de iPhone", v: 20.4, t: "R$ 20,4 mil" }, { l: "Travesseiro Fresh", v: 6.0, t: "R$ 6,0 mil" }, { l: "Máscara Maybelline", v: 3.7, t: "R$ 3,7 mil" }, { l: "Edredom Hoomy", v: 3.5, t: "R$ 3,5 mil" }, { l: "Toalhas Hoomy", v: 3.3, t: "R$ 3,3 mil" }],
   categorias: [{ l: "Celular e acessórios", v: 49 }, { l: "Casa e cama", v: 35 }, { l: "Beleza", v: 11 }, { l: "Papelaria", v: 4 }],
@@ -2454,7 +2458,7 @@ $("#instaGenero").innerHTML = barras(INSTA.genero);
 $("#instaIdade").innerHTML = barras(INSTA.idade);
 $("#instaCidade").innerHTML = barras(INSTA.cidades);
 $("#ttData").textContent = TIKTOK.data; $("#ttNota").textContent = TIKTOK.nota;
-$("#ttNum").innerHTML = TIKTOK.numeros.map((x) => `<div><strong class="num">${esc(x.n)}</strong><span>${esc(x.r)}</span></div>`).join("");
+$("#ttNum").innerHTML = TIKTOK.numeros.map((x) => `<div${x.destaque ? ' class="destaque"' : ""}><strong class="num">${esc(x.n)}</strong><span>${esc(x.r)}</span></div>`).join("");
 const barrasTxt = (arr) => { const max = Math.max(...arr.map((x) => x.v)); return arr.map((x) => `<div class="barra"><span>${esc(x.l)}</span><i style="--w:${(x.v / max * 100).toFixed(0)}%"></i><b>${esc(x.t || String(x.v).replace(".", ",") + "%")}</b></div>`).join(""); };
 $("#ttProdutos").innerHTML = barrasTxt(TIKTOK.produtos);
 $("#ttCategorias").innerHTML = barrasTxt(TIKTOK.categorias);
