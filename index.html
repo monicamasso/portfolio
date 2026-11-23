@@ -940,7 +940,7 @@
   .extra-card{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:nowrap;background:#fff;border-radius:999px;padding:12px 24px;box-shadow:0 12px 20px -16px rgba(0,0,0,.4)}
   .extra-card b{font-size:.88rem;font-weight:600;line-height:1.25;flex:1 1 110px}
   .extra-card .preco{font-size:1.7rem}
-  .extra-card small{width:auto;margin:0 0 0 -4px;color:var(--gray);font-size:.75rem;white-space:nowrap;flex:none}
+  .extra-card small{width:auto;margin:0 -4px 0 0;color:var(--gray);font-size:.75rem;white-space:nowrap;flex:none}
   .extra-linha p{margin:0;color:#555;font-size:.9rem;line-height:1.6}
   .extras-nota{margin:22px 0 0;color:var(--gray);font-size:.85rem}
   @media (max-width:900px){.extra-linha{grid-template-columns:1fr;gap:8px}}
@@ -2435,7 +2435,7 @@ $("#funilNota").textContent = VALORES.funilNota;
   $("#estSelo").textContent = tm.selo; $("#estTitulo").textContent = tm.titulo; $("#estTema").textContent = tm.tema; $("#estLead").textContent = tm.lead;
 })();
 $("#extras").innerHTML = VALORES.extras.map((x) => `
-  <div class="extra-linha"><div class="extra-card"><b>${esc(x.nome)}</b><strong class="preco">${esc(x.preco)}</strong>${x.nota ? `<small>${esc(x.nota)}</small>` : ""}</div><p>${esc(x.texto)}</p></div>`).join("");
+  <div class="extra-linha"><div class="extra-card"><b>${esc(x.nome)}</b>${x.nota ? `<small>${esc(x.nota)}</small>` : ""}<strong class="preco">${esc(x.preco)}</strong></div><p>${esc(x.texto)}</p></div>`).join("");
 $("#extrasNota").textContent = VALORES.extrasNota;
 
 (function () {
