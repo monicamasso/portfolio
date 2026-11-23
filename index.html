@@ -727,39 +727,39 @@
   #numeros .metric:not(:last-child)::after{content:"";position:absolute;right:-6px;top:.5em;width:1.1rem;height:1.1rem;background:var(--pink);-webkit-mask:var(--spark) center/contain no-repeat;mask:var(--spark) center/contain no-repeat}
   /* Resultados de campanha e depoimentos: colagem com fita transparente e clipe rosa */
   #numeros .subhead::after{display:none}
-  #numeros .results{grid-template-columns:repeat(2,minmax(0,1fr));gap:34px}
-  #numeros .result,#numeros .result.glass{position:relative;padding:38px 24px 26px;background:#fff;color:var(--ink);border:0;border-radius:22px;box-shadow:0 22px 34px -22px rgba(0,0,0,.4);backdrop-filter:none}
-  #numeros .result:nth-child(1){transform:rotate(-2.5deg)}
-  #numeros .result:nth-child(2){transform:rotate(1.8deg) translateY(10px);background:#fff;color:var(--ink)}
-  #numeros .result:nth-child(3){transform:rotate(-1.4deg)}
-  #numeros .result::before{content:"";position:absolute;top:-18px;left:50%;width:124px;height:48px;margin-left:-62px;border-radius:0;background:url("img/elementos/fita.png") center/contain no-repeat;box-shadow:none;transform:rotate(-4deg)}
-  #numeros .result:nth-child(2)::before{transform:rotate(5deg)}
-  #numeros .result:nth-child(1)::after{content:"";position:absolute;z-index:3;top:8px;right:74px;width:26px;height:98px;background:url("img/elementos/clipe.png") center/contain no-repeat;transform:rotate(3deg);transform-origin:50% 12%;pointer-events:none}
-  #numeros .result strong{color:var(--pink-ink)}
-  #numeros .result-print{display:block;width:100%;height:auto;margin-top:18px;border-radius:12px;box-shadow:0 0 0 1px #e6e0da,0 10px 18px -12px rgba(0,0,0,.35)}
-  #numeros .result-brand{font-size:2.9rem;color:var(--ink);white-space:nowrap}
-  #numeros .result,#numeros .result.glass{display:flex;flex-direction:column}
-  #numeros .result strong{display:flex;align-items:center;gap:14px}
-  #numeros .result-print{margin-top:auto}
+  :is(#numeros,#insta) .results{grid-template-columns:repeat(2,minmax(0,1fr));gap:34px}
+  :is(#numeros,#insta) .result,:is(#numeros,#insta) .result.glass{position:relative;padding:38px 24px 26px;background:#fff;color:var(--ink);border:0;border-radius:22px;box-shadow:0 22px 34px -22px rgba(0,0,0,.4);backdrop-filter:none}
+  :is(#numeros,#insta) .result:nth-child(1){transform:rotate(-2.5deg)}
+  :is(#numeros,#insta) .result:nth-child(2){transform:rotate(1.8deg) translateY(10px);background:#fff;color:var(--ink)}
+  :is(#numeros,#insta) .result:nth-child(3){transform:rotate(-1.4deg)}
+  :is(#numeros,#insta) .result::before{content:"";position:absolute;top:-18px;left:50%;width:124px;height:48px;margin-left:-62px;border-radius:0;background:url("img/elementos/fita.png") center/contain no-repeat;box-shadow:none;transform:rotate(-4deg)}
+  :is(#numeros,#insta) .result:nth-child(2)::before{transform:rotate(5deg)}
+  :is(#numeros,#insta) .result:nth-child(1)::after{content:"";position:absolute;z-index:3;top:8px;right:74px;width:26px;height:98px;background:url("img/elementos/clipe.png") center/contain no-repeat;transform:rotate(3deg);transform-origin:50% 12%;pointer-events:none}
+  :is(#numeros,#insta) .result strong{color:var(--pink-ink)}
+  :is(#numeros,#insta) .result-print{display:block;width:100%;height:auto;margin-top:18px;border-radius:12px;box-shadow:0 0 0 1px #e6e0da,0 10px 18px -12px rgba(0,0,0,.35)}
+  :is(#numeros,#insta) .result-brand{font-size:2.9rem;color:var(--ink);white-space:nowrap}
+  :is(#numeros,#insta) .result,:is(#numeros,#insta) .result.glass{display:flex;flex-direction:column}
+  :is(#numeros,#insta) .result strong{display:flex;align-items:center;gap:14px}
+  :is(#numeros,#insta) .result-print{margin-top:auto}
   /* Fotos da marca, soltas como polaroides */
-  #numeros .result-fotos{display:flex;flex-wrap:wrap;gap:12px;margin:0 0 18px 4px}
-  #numeros .result-fotos img{display:block;width:76px;aspect-ratio:3/4;object-fit:cover;border:4px solid #fff;border-radius:10px;box-shadow:0 0 0 1px #e6e0da,0 10px 16px -10px rgba(0,0,0,.45)}
-  #numeros .result-fotos img:nth-child(1){transform:rotate(-4deg)}
-  #numeros .result-fotos img:nth-child(2){transform:rotate(3deg) translateY(4px)}
-  #numeros .result-fotos img:nth-child(3){transform:rotate(-2deg)}
-  #numeros .result-fotos img:nth-child(4){transform:rotate(4deg) translateY(3px)}
-  #numeros .result-fotos img:nth-child(5){transform:rotate(-3deg)}
-  #numeros .result p{margin-bottom:18px}
-  #numeros .result-topo{display:flex;align-items:center;gap:16px;margin-bottom:6px}
-  #numeros .result-parceira{display:inline-block;margin-top:-14px;font-size:.82rem;font-weight:600;color:var(--pink-ink)}
+  :is(#numeros,#insta) .result-fotos{display:flex;flex-wrap:wrap;gap:12px;margin:0 0 18px 4px}
+  :is(#numeros,#insta) .result-fotos img{display:block;width:76px;aspect-ratio:3/4;object-fit:cover;border:4px solid #fff;border-radius:10px;box-shadow:0 0 0 1px #e6e0da,0 10px 16px -10px rgba(0,0,0,.45)}
+  :is(#numeros,#insta) .result-fotos img:nth-child(1){transform:rotate(-4deg)}
+  :is(#numeros,#insta) .result-fotos img:nth-child(2){transform:rotate(3deg) translateY(4px)}
+  :is(#numeros,#insta) .result-fotos img:nth-child(3){transform:rotate(-2deg)}
+  :is(#numeros,#insta) .result-fotos img:nth-child(4){transform:rotate(4deg) translateY(3px)}
+  :is(#numeros,#insta) .result-fotos img:nth-child(5){transform:rotate(-3deg)}
+  :is(#numeros,#insta) .result p{margin-bottom:18px}
+  :is(#numeros,#insta) .result-topo{display:flex;align-items:center;gap:16px;margin-bottom:6px}
+  :is(#numeros,#insta) .result-parceira{display:inline-block;margin-top:-14px;font-size:.82rem;font-weight:600;color:var(--pink-ink)}
   /* Cartão com o print do lado (o das interações do carrossel) */
-  #numeros .result.com-lado{display:grid;grid-template-columns:minmax(0,1fr) 190px;column-gap:20px;align-content:start}
-  #numeros .result.com-lado .result-topo{grid-column:1/-1}
-  #numeros .result.com-lado strong,#numeros .result.com-lado p{grid-column:1}
-  #numeros .result.com-lado .result-print{grid-column:2;grid-row:2/span 2;align-self:start;margin:0;width:100%}
-  @media (max-width:640px){#numeros .result-brand{white-space:normal;font-size:2.3rem}}
-  #numeros .result-logo{display:block;width:56px;height:56px;border-radius:14px;object-fit:cover;flex:none;box-shadow:0 8px 14px -8px rgba(0,0,0,.5)}
-  #numeros .result-thumb{display:block;width:96px;aspect-ratio:3/4;height:auto;object-fit:cover;border:4px solid #fff;border-radius:14px;box-shadow:0 0 0 1px #e6e0da,0 12px 20px -10px rgba(0,0,0,.5);transform:rotate(-4deg)}
+  :is(#numeros,#insta) .result.com-lado{display:grid;grid-template-columns:minmax(0,1fr) 190px;column-gap:20px;align-content:start}
+  :is(#numeros,#insta) .result.com-lado .result-topo{grid-column:1/-1}
+  :is(#numeros,#insta) .result.com-lado strong,:is(#numeros,#insta) .result.com-lado p{grid-column:1}
+  :is(#numeros,#insta) .result.com-lado .result-print{grid-column:2;grid-row:2/span 2;align-self:start;margin:0;width:100%}
+  @media (max-width:640px){:is(#numeros,#insta) .result-brand{white-space:normal;font-size:2.3rem}}
+  :is(#numeros,#insta) .result-logo{display:block;width:56px;height:56px;border-radius:14px;object-fit:cover;flex:none;box-shadow:0 8px 14px -8px rgba(0,0,0,.5)}
+  :is(#numeros,#insta) .result-thumb{display:block;width:96px;aspect-ratio:3/4;height:auto;object-fit:cover;border:4px solid #fff;border-radius:14px;box-shadow:0 0 0 1px #e6e0da,0 12px 20px -10px rgba(0,0,0,.5);transform:rotate(-4deg)}
   #numeros .testi,#numeros .testi.glass{position:relative;padding:38px 28px 26px;background:#fff;border:0;border-radius:22px;box-shadow:0 22px 34px -22px rgba(0,0,0,.4);backdrop-filter:none}
   #numeros .testi:nth-child(odd){transform:rotate(-1.2deg)}
   #numeros .testi:nth-child(even){transform:rotate(1.2deg) translateY(8px)}
@@ -974,6 +974,24 @@
   @media (max-width:700px){.wa-fixo{right:14px;bottom:14px;width:56px;height:56px}.wa-fixo svg{width:32px;height:32px}}
   .form-erro{margin:12px 0 0;color:#b3261e;font-size:.85rem;line-height:1.5}
   .tt-sub{margin-top:46px}
+  /* Cabeçalhos das três áreas de valores: UGC (rosa cheio), Influencer (contorno rosa) e TikTok Shop (preto) */
+  .area{display:grid;grid-template-columns:auto minmax(0,1fr) minmax(0,1.1fr);align-items:center;column-gap:clamp(18px,3vw,36px);margin:110px 0 38px;padding:clamp(22px,3vw,34px) clamp(22px,3.4vw,44px);border-radius:32px;position:relative}
+  .area-ugc{margin-top:46px}
+  .area-num{font-family:"Anton",Impact,sans-serif;font-size:clamp(3.4rem,7vw,6rem);line-height:.9;letter-spacing:.01em}
+  .area-eyebrow{margin:0 0 6px;font-family:"Anton",Impact,sans-serif;text-transform:uppercase;letter-spacing:.14em;font-size:.8rem}
+  .area-titulo{margin:0;font-family:"Anton",Impact,sans-serif;font-weight:400;text-transform:uppercase;font-size:clamp(2rem,4.2vw,3.4rem);line-height:1}
+  .area-desc{margin:0;font-size:.95rem;line-height:1.5}
+  .area-ugc{background:var(--pink);color:#fff;box-shadow:0 26px 40px -26px rgba(224,33,143,.8)}
+  .area-ugc .area-num{color:rgba(255,255,255,.45)}
+  .area-influ{background:#fff;color:var(--ink);box-shadow:inset 0 0 0 3px var(--pink)}
+  .area-influ .area-num,.area-influ .area-eyebrow{color:var(--pink)}
+  .area-tt{background:var(--ink);color:#f7efe2;box-shadow:0 26px 40px -26px rgba(0,0,0,.7)}
+  .area-tt .area-num,.area-tt .area-eyebrow{color:var(--pink)}
+  @media (max-width:760px){.area{grid-template-columns:auto minmax(0,1fr);row-gap:10px;margin-top:80px}.area-desc{grid-column:1/-1}}
+  .insta-res-titulo{display:flex;align-items:center;gap:10px;margin:46px 0 34px;padding-top:30px;border-top:1px solid #2c2c2c;font-family:"Anton",Impact,sans-serif;font-weight:400;text-transform:uppercase;letter-spacing:.06em;font-size:1rem;color:#f7efe2}
+  .insta-res-titulo .spark{width:.9em;height:.9em;color:var(--pink)}
+  #insta .results{margin-bottom:26px}
+  @media (max-width:640px){#insta .result:nth-child(1)::after{display:none}}
   .influ-linha .preco{text-align:right;white-space:nowrap}
   .influ-linha .preco .un{margin-top:2px;font-family:"Poppins",sans-serif;font-weight:500;font-size:.72rem;letter-spacing:0;text-transform:none;text-align:right}
   #ttPainel{margin-top:34px}
@@ -1133,7 +1151,7 @@
     .filters{flex-wrap:wrap;overflow:visible;margin-right:0;padding:0;gap:10px;margin-bottom:24px}
     .filter[data-filter="todos"]{display:none}
     #works{scroll-margin-top:90px}
-    #numeros .results{grid-template-columns:1fr;gap:26px}
+    :is(#numeros,#insta) .results{grid-template-columns:1fr;gap:26px}
     #fotos .fotos-fila{grid-template-columns:repeat(2,minmax(0,1fr));gap:22px 14px;padding-left:0;padding-right:0}
     .insta-num{grid-template-columns:repeat(2,minmax(0,1fr));row-gap:22px}
     .insta-num > div{border-left:0!important}
@@ -1142,8 +1160,8 @@
     .influ-mensal .preco{white-space:nowrap;font-size:2.1rem}
     .contact-links b{font-size:.76rem;word-break:normal;overflow-wrap:anywhere}
     .contact-links a{gap:10px;padding:12px 14px}
-    #numeros .result.com-lado{display:flex;flex-direction:column}
-    #numeros .result.com-lado .result-print{margin-top:18px}
+    :is(#numeros,#insta) .result.com-lado{display:flex;flex-direction:column}
+    :is(#numeros,#insta) .result.com-lado .result-print{margin-top:18px}
   }
 </style>
 </head>
@@ -1384,7 +1402,12 @@
     <div class="wrap">
       <div class="head reveal">
         <p class="eyebrow">Valores</p>
-        <h2 class="title" id="valores-title">Investimento <span class="rosa">UGC</span></h2>
+        <h2 class="title" id="valores-title">Investimento <span class="rosa">por formato</span></h2>
+      </div>
+      <div class="area area-ugc reveal">
+        <span class="area-num" aria-hidden="true">01</span>
+        <div><p class="area-eyebrow">Vídeos para a sua marca</p><h3 class="area-titulo">UGC</h3></div>
+        <p class="area-desc">Vídeos feitos por mim para a marca usar nos próprios canais e anúncios.</p>
       </div>
       <h3 class="subhead reveal">Pacotes de vídeo</h3>
       <div class="pacotes" id="pacotes"></div>
@@ -1411,7 +1434,11 @@
         <p class="funil-nota" id="funilNota"></p>
         <a class="btn est-btn" href="https://wa.me/5516997478134" target="_blank" rel="noopener"><span class="spark" aria-hidden="true"></span>Quero esse pacote</a>
       </section>
-      <h3 class="subhead reveal">Influencer digital</h3>
+      <div class="area area-influ reveal">
+        <span class="area-num" aria-hidden="true">02</span>
+        <div><p class="area-eyebrow">Instagram</p><h3 class="area-titulo">Influencer digital</h3></div>
+        <p class="area-desc">Conteúdo publicado no meu perfil do Instagram, para a minha audiência.</p>
+      </div>
       <section class="insta reveal" id="insta" aria-labelledby="insta-titulo">
         <div class="insta-topo"><p class="insta-eyebrow" id="insta-titulo"><span class="spark" aria-hidden="true"></span>Meu Instagram</p><a class="insta-pilula" href="https://www.instagram.com/monicamasso/" target="_blank" rel="noopener">@monicamasso</a><span class="insta-data" id="instaData"></span></div>
         <div class="insta-num" id="instaNum"></div>
@@ -1420,6 +1447,8 @@
           <div class="insta-col"><h5>Idade</h5><div id="instaIdade" style="--lbl:58px"></div></div>
           <div class="insta-col"><h5>Cidades</h5><div id="instaCidade"></div></div>
         </div>
+        <h4 class="insta-res-titulo"><span class="spark" aria-hidden="true"></span>Resultados de campanha</h4>
+        <div class="results" id="results"></div>
         <p class="insta-rodape" id="instaNota"></p>
       </section>
       <div class="influ-bloco">
@@ -1429,7 +1458,11 @@
         </div>
         <div class="folha influ-regras reveal"><h4>Como funciona</h4><ul class="lista-spark" id="influObs"></ul></div>
       </div>
-      <h3 class="subhead reveal tt-sub">TikTok Shop</h3>
+      <div class="area area-tt reveal">
+        <span class="area-num" aria-hidden="true">03</span>
+        <div><p class="area-eyebrow">TikTok</p><h3 class="area-titulo">TikTok Shop</h3></div>
+        <p class="area-desc">Vídeos nativos no meu TikTok Shop, com comissão sobre as vendas.</p>
+      </div>
       <div class="influ-bloco tt-bloco">
         <div class="influ-esq">
           <div class="influ-lista reveal" id="ttTarifa"></div>
@@ -1463,8 +1496,6 @@
         <h2 class="title" id="numeros-title">Resultados que <em>falam por mim</em></h2>
       </div>
       <div class="metrics" id="metrics"></div>
-      <h3 class="subhead reveal">Resultados de campanha</h3>
-      <div class="results" id="results"></div>
       <h3 class="subhead reveal">O que as marcas dizem</h3>
       <div class="prints" id="prints"></div>
       <div class="plat-topo">
