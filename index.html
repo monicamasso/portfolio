@@ -974,6 +974,13 @@
   @media (max-width:700px){.wa-fixo{right:14px;bottom:14px;width:56px;height:56px}.wa-fixo svg{width:32px;height:32px}}
   .form-erro{margin:12px 0 0;color:#b3261e;font-size:.85rem;line-height:1.5}
   .tt-sub{margin-top:46px}
+  /* Versão /proposta (sem valores): o arquivo proposta.html é gerado por gerar-proposta.sh e ganha class="proposta" no <html>.
+     Aqui só ficam os painéis de métricas do Instagram e do TikTok Shop; tudo o que é preço some. */
+  .so-proposta{display:none}
+  html.proposta #valores .wrap > *{display:none}
+  html.proposta #valores .wrap > .so-proposta,html.proposta #valores .wrap > #insta,html.proposta #valores .wrap > #ttPainel{display:block}
+  html.proposta #ttPainel{margin-top:34px}
+  html.proposta li:has(> a[href="#valores"]){display:none}
   /* Cabeçalhos das três áreas de valores: UGC (rosa cheio), Influencer (contorno rosa) e TikTok Shop (preto) */
   .area{display:grid;grid-template-columns:auto minmax(0,1fr) minmax(0,1.1fr);align-items:center;column-gap:clamp(18px,3vw,36px);margin:110px 0 38px;padding:clamp(22px,3vw,34px) clamp(22px,3.4vw,44px);border-radius:32px;position:relative}
   .area-ugc{margin-top:46px}
@@ -1418,6 +1425,10 @@
   <!-- ===================== VALORES ===================== -->
   <section id="valores" data-mark="VALORES" aria-labelledby="valores-title">
     <div class="wrap">
+      <div class="head so-proposta">
+        <p class="eyebrow">Redes sociais</p>
+        <h2 class="title">Meu alcance <span class="rosa">nas redes</span></h2>
+      </div>
       <div class="head reveal">
         <p class="eyebrow">Valores</p>
         <h2 class="title" id="valores-title">Investimento <span class="rosa">por formato</span></h2>
