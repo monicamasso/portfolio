@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Entrar · Mônica Masso</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../admin/painel.css">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="../js/banco.js"></script>
+</head>
+<body>
+<main class="login">
+  <div class="cartao-login">
+    <div class="marca-login">Mônica <b>Masso</b></div>
+
+    <!-- 1. Entrar -->
+    <form id="formEntrar" class="pilha" novalidate>
+      <div>
+        <h1>Entrar no painel</h1>
+        <p>Área só da Mônica.</p>
+      </div>
+      <div class="faixa faixa-erro" id="erroEntrar" role="alert" hidden></div>
+      <div class="faixa faixa-ok" id="okEntrar" role="status" hidden></div>
+      <div class="campo">
+        <label for="email">E-mail</label>
+        <input id="email" type="email" autocomplete="username" required>
+      </div>
+      <div class="campo">
+        <label for="senha">Senha</label>
+        <input id="senha" type="password" autocomplete="current-password" required>
+      </div>
+      <button class="bt bt-rosa" type="submit" id="btEntrar">Entrar</button>
+      <button class="link-simples" type="button" id="btEsqueci">Esqueci minha senha</button>
+    </form>
+
+    <!-- 2. Criar senha nova (aparece quando você chega pelo e-mail de recuperação) -->
+    <form id="formNovaSenha" class="pilha" novalidate hidden>
+      <div>
+        <h1>Criar senha nova</h1>
+        <p>Escolha uma senha com pelo menos 8 caracteres.</p>
+      </div>
+      <div class="faixa faixa-erro" id="erroNova" role="alert" hidden></div>
+      <div class="campo">
+        <label for="novaSenha">Senha nova</label>
+        <input id="novaSenha" type="password" autocomplete="new-password" minlength="8" required>
+      </div>
+      <button class="bt bt-rosa" type="submit">Salvar e entrar</button>
+    </form>
+  </div>
+</main>
+
+<script>
+const $ = (s) => document.querySelector(s);
+const PAINEL = "../admin/";
+const voltouPeloEmail = /type=recovery/.test(location.hash);
+
+function mostrar(el, texto) { el.textContent = texto; el.hidden = !texto; }
+
+/* Traduz os erros do Supabase. Nunca mostra a mensagem em inglês. */
+function traduzir(erro) {
+  const m = ((erro && (erro.code || "")) + " " + (erro && erro.message || "")).toLowerCase();
+  if (m.includes("invalid") && (m.includes("credential") || m.includes("login"))) return "E-mail ou senha incorretos";
+  if (m.includes("not confirmed")) return "Esse e-mail ainda não foi confirmado. Veja a sua caixa de entrada.";
+  if (m.includes("rate") || m.includes("too many") || m.includes("security purposes")) return "Muitas tentativas seguidas. Espere um minutinho e tente de novo.";
+  if (m.includes("weak") || m.includes("at least")) return "Essa senha é muito fraca. Use pelo menos 8 caracteres.";
+  if (m.includes("same") && m.includes("password")) return "A senha nova precisa ser diferente da antiga.";
+  if (m.includes("fetch") || m.includes("network")) return "Não consegui conectar. Confira a internet e tente de novo.";
+  return "Não deu certo agora. Tente de novo em instantes.";
+}
+
+if (!window.banco) {
+  mostrar($("#erroEntrar"), "Não consegui carregar a conexão com o banco. Confira a internet e recarregue a página.");
+} else {
+  /* Se já tem sessão aberta, vai direto pro painel (menos quando chegou pelo e-mail de nova senha) */
+  if (voltouPeloEmail) {
+    $("#formEntrar").hidden = true;
+    $("#formNovaSenha").hidden = false;
+  } else {
+    banco.auth.getSession().then(({ data }) => { if (data && data.session) location.replace(PAINEL); });
+  }
+  banco.auth.onAuthStateChange((evento) => {
+    if (evento === "PASSWORD_RECOVERY") { $("#formEntrar").hidden = true; $("#formNovaSenha").hidden = false; }
+  });
+
+  $("#formEntrar").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    mostrar($("#erroEntrar"), ""); mostrar($("#okEntrar"), "");
+    const email = $("#email").value.trim(), senha = $("#senha").value;
+    if (!email || !senha) { mostrar($("#erroEntrar"), "Preencha o e-mail e a senha."); return; }
+    $("#btEntrar").disabled = true; $("#btEntrar").textContent = "Entrando...";
+    try {
+      const { error } = await banco.auth.signInWithPassword({ email, password: senha });
+      if (error) throw error;
+      location.replace(PAINEL);
+    } catch (erro) {
+      mostrar($("#erroEntrar"), traduzir(erro));
+      $("#btEntrar").disabled = false; $("#btEntrar").textContent = "Entrar";
+    }
+  });
+
+  $("#btEsqueci").addEventListener("click", async () => {
+    mostrar($("#erroEntrar"), ""); mostrar($("#okEntrar"), "");
+    const email = $("#email").value.trim();
+    if (!email) { mostrar($("#erroEntrar"), "Escreva o seu e-mail no campo acima e clique de novo em \"Esqueci minha senha\"."); $("#email").focus(); return; }
+    try {
+      const { error } = await banco.auth.resetPasswordForEmail(email, { redirectTo: location.origin + "/login/" });
+      if (error) throw error;
+      mostrar($("#okEntrar"), "Pronto! Se esse e-mail for o do painel, chega uma mensagem com o link para criar uma senha nova.");
+    } catch (erro) {
+      mostrar($("#erroEntrar"), traduzir(erro));
+    }
+  });
+
+  $("#formNovaSenha").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    mostrar($("#erroNova"), "");
+    const senha = $("#novaSenha").value;
+    if (senha.length < 8) { mostrar($("#erroNova"), "Use pelo menos 8 caracteres."); return; }
+    try {
+      const { error } = await banco.auth.updateUser({ password: senha });
+      if (error) throw error;
+      location.replace(PAINEL);
+    } catch (erro) {
+      mostrar($("#erroNova"), traduzir(erro));
+    }
+  });
+}
+</script>
+</body>
+</html>

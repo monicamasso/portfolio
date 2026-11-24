@@ -522,6 +522,7 @@
   .vid-brand{font-size:1rem}
   .vid-type{font-size:2.5rem;margin-top:0;line-height:.78}
   .vid .work-niche{display:none}
+  .vid-destaque{display:inline-block;margin-top:6px;font-size:.72rem;font-weight:600;padding:2px 10px;border-radius:999px;background:var(--pink);color:#fff}
   @media (hover:none){.vid .play{opacity:1}}
   @media (max-width:900px){
     .filters{flex-wrap:nowrap;overflow-x:auto;margin-right:calc(50% - 50vw);padding:2px 20px 6px 0;scrollbar-width:none}
@@ -1570,7 +1571,7 @@
           </div>
         </div>
         <div class="contato-dir">
-          <!-- FORMULÁRIO: envia a mensagem para o seu e-mail pelo FormSubmit (grátis, sem cadastro).
+          <!-- FORMULÁRIO: envia a mensagem para o seu e-mail (Web3Forms) e grava a marca como Lead na sua base do painel.
                No primeiro envio real, o FormSubmit manda um e-mail de ativação para você: é só confirmar. -->
           <form class="form" id="contactForm" novalidate>
             <div class="field">
@@ -1617,6 +1618,9 @@
   </div>
 </footer>
 
+<!-- Conexão com o banco do painel (Supabase, por CDN). "defer" não atrasa o carregamento do site. -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script>
+<script src="js/banco.js" defer></script>
 <script>
 /* =====================================================================
    DADOS DO PORTFÓLIO
@@ -1739,7 +1743,7 @@ const NICHOS = [
    nicho: nicho do vídeo (precisa estar em algum "inclui" da lista NICHOS)
    tipo:  formato do conteúdo
    Para adicionar um vídeo, copie uma linha, troque os dados e salve. */
-const VIDEOS = [
+let VIDEOS = [
   { id: "yvCJrx2M1Fw", marca: "Mercado Livre", nicho: "Varejo", tipo: "Comercial", data: "2026-02-02" },
   { id: "6WDSrkdCKWs", marca: "VB Camisetas", nicho: "Moda", tipo: "Humor", data: "2026-06-03" },
   { id: "J9_oGdwKN5s", marca: "Flora Amar", nicho: "Moda Fitness", tipo: "Rotina", data: "2025-02-17" },
@@ -2186,7 +2190,10 @@ let lista = VIDEOS;
 /* Ordem dos vídeos: do mais recente para o mais antigo.
    Quem tem "data" (AAAA-MM-DD) vai pela data; quem não tem fica depois, na ordem da planilha. */
 const baseMarca = (m) => m.toLowerCase().replace(/\s*\d+$/, "").replace(/\b(joias|hotel|spa romantik)\b/g, "").replace(/\s+/g, " ").trim();
+/* Quando os vídeos vêm do painel, vale a ordem que você arrumou lá (arrastando) */
+let ordemDoPainel = false;
 const ordenar = (todos) => {
+  if (ordemDoPainel) return todos;
   /* vídeos marcados com ultimo: true vão para o fim do nicho */
   const arr = todos.filter((v) => !v.ultimo), finais = todos.filter((v) => v.ultimo);
   const porData = arr.map((v, i) => ({ v, i }))
@@ -2228,6 +2235,7 @@ function cardVideo(v, i) {
       <span class="work-niche">${esc(v.nicho)}</span>
       <span class="vid-brand">${esc(v.marca)}</span>
       <span class="vid-type">${esc(v.tipo)}</span>
+      ${v.destaque ? `<span class="vid-destaque">${esc(v.destaque)}</span>` : ""}
     </span>
   </button>`;
 }
@@ -2314,11 +2322,14 @@ window.addEventListener("pointercancel", soltar);
 /* Depois de arrastar, o clique que o navegador dispara não pode abrir o vídeo */
 worksEl.addEventListener("click", (e) => { if (arrastou) { e.stopPropagation(); e.preventDefault(); } }, true);
 
-filtersEl.innerHTML = [{ nome: "todos", emoji: "✨" }, ...NICHOS].map((g, i) => {
-  const total = g.nome === "todos" ? VIDEOS.length : VIDEOS.filter((v) => grupoDe(v.nicho) === g.nome).length;
-  if (!total) return "";
-  return `<button type="button" class="filter" data-filter="${esc(g.nome)}" aria-pressed="${i === 0}"><span class="filter-emoji" aria-hidden="true">${g.emoji}</span> ${g.nome === "todos" ? "Todos" : esc(g.nome)} <small>${total}</small></button>`;
-}).join("");
+function montarFiltros() {
+  filtersEl.innerHTML = [{ nome: "todos", emoji: "✨" }, ...NICHOS].map((g, i) => {
+    const total = g.nome === "todos" ? VIDEOS.length : VIDEOS.filter((v) => grupoDe(v.nicho) === g.nome).length;
+    if (!total) return "";
+    return `<button type="button" class="filter" data-filter="${esc(g.nome)}" aria-pressed="${i === 0}"><span class="filter-emoji" aria-hidden="true">${g.emoji}</span> ${g.nome === "todos" ? "Todos" : esc(g.nome)} <small>${total}</small></button>`;
+  }).join("");
+}
+montarFiltros();
 
 /* No celular os vídeos só aparecem depois de tocar na pílula do nicho (tocar de novo fecha) */
 const celularNichos = window.matchMedia("(max-width:700px)");
@@ -2597,24 +2608,33 @@ function handleForm(form, success) {
     botao.disabled = true;
     const limite = new AbortController();
     const prazo = setTimeout(() => limite.abort(), 20000);
+    const nome = form.elements.nome.value.trim();
+    const email = form.elements.email.value.trim();
+    const mensagem = form.elements.mensagem.value.trim();
     try {
-      /* Envio pelo Web3Forms (a chave abaixo é pública e só serve para enviar mensagens ao seu e-mail) */
-      const r = await fetch("https://api.web3forms.com/submit", {
-        method: "POST",
-        signal: limite.signal,
-        headers: { "Content-Type": "application/json", Accept: "application/json" },
-        body: JSON.stringify({
-          access_key: "7eb408f4-7052-43e1-ba4a-ef7fbaa6e0d9",
-          subject: "Novo contato pelo portfólio",
-          from_name: "Portfólio Mônica Masso",
-          botcheck: form.elements._honey.value,
-          name: form.elements.nome.value.trim(),
-          email: form.elements.email.value.trim(),
-          message: form.elements.mensagem.value.trim()
-        })
-      });
-      const dados = await r.json().catch(() => ({}));
-      if (!r.ok || dados.success !== true) throw new Error("envio");
+      /* 1. Envio pelo Web3Forms (a chave abaixo é pública e só serve para enviar mensagens ao seu e-mail) */
+      const porEmail = (async () => {
+        const r = await fetch("https://api.web3forms.com/submit", {
+          method: "POST",
+          signal: limite.signal,
+          headers: { "Content-Type": "application/json", Accept: "application/json" },
+          body: JSON.stringify({
+            access_key: "7eb408f4-7052-43e1-ba4a-ef7fbaa6e0d9",
+            subject: "Novo contato pelo portfólio",
+            from_name: "Portfólio Mônica Masso",
+            botcheck: form.elements._honey.value,
+            name: nome,
+            email: email,
+            message: mensagem
+          })
+        });
+        const dados = await r.json().catch(() => ({}));
+        if (!r.ok || dados.success !== true) throw new Error("envio");
+      })();
+      /* 2. Ao mesmo tempo, a marca entra na sua base do painel como Lead */
+      const naBase = salvarLead(nome, email, mensagem, form.elements._honey.value);
+      const [a, b] = await Promise.allSettled([porEmail, naBase]);
+      if (a.status !== "fulfilled" && b.status !== "fulfilled") throw new Error("envio");
     } catch (err) {
       clearTimeout(prazo);
       botao.disabled = false;
@@ -2628,6 +2648,84 @@ function handleForm(form, success) {
   });
 }
 handleForm($("#contactForm"), $("#contactSuccess"));
+
+/* =====================================================================
+   LIGAÇÃO COM O PAINEL (monicamasso.com.br/admin)
+   A conexão fica em js/banco.js. Se o banco não responder, o site segue
+   funcionando do jeito de antes: vídeos da lista acima e e-mail do formulário.
+   ===================================================================== */
+const hojeLocal = () => { const d = new Date(); return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`; };
+const codigoYouTube = (link) => {
+  const m = String(link || "").match(/(?:youtube\.com\/(?:shorts\/|watch\?(?:.*&)?v=|embed\/|live\/)|youtu\.be\/)([\w-]{6,})/);
+  return m ? m[1] : "";
+};
+
+/* Formulário de contato: a marca entra na tabela "marcas" como Lead */
+function salvarLead(nome, email, mensagem, armadilha) {
+  if (armadilha) return Promise.reject(new Error("robô")); /* campo escondido preenchido = robô */
+  if (!window.banco) return Promise.reject(new Error("sem banco"));
+  const envio = banco.from("marcas").insert({
+    nome: nome.slice(0, 200), email: email.slice(0, 200), obs: ("Mensagem pelo site: " + mensagem).slice(0, 5000),
+    situacao: "lead", origem: "site", ultimo_contato: hojeLocal()
+  }).then(({ error }) => { if (error) throw error; });
+  const prazo = new Promise((_, nao) => setTimeout(() => nao(new Error("demorou")), 20000));
+  return Promise.race([envio, prazo]);
+}
+
+/* Vídeos: lê da tabela "videos" (só os com o olhinho aberto, na ordem do painel).
+   Se o painel ainda não tiver vídeos, fica a lista VIDEOS lá de cima. */
+async function videosDoPainel() {
+  if (!window.banco) return;
+  try {
+    const { data, error } = await banco.from("videos")
+      .select("link,nicho,formato,marca,destaque,ordem")
+      .eq("visivel", true).eq("exemplo", false)
+      .order("ordem", { ascending: true }).order("id", { ascending: true });
+    if (error || !data) return;
+    const novos = data.map((v) => ({ id: codigoYouTube(v.link), marca: v.marca || "", nicho: v.nicho || "", tipo: v.formato || "", destaque: v.destaque || "" })).filter((v) => v.id);
+    if (!novos.length) return;
+    const escolhido = filtersEl.querySelector('.filter[aria-pressed="true"]');
+    const nome = escolhido ? escolhido.dataset.filter : null;
+    VIDEOS = novos;
+    ordemDoPainel = true;
+    montarFiltros();
+    const continua = nome && [...filtersEl.querySelectorAll(".filter")].some((b) => b.dataset.filter === nome);
+    const mostrar = continua ? nome : celularNichos.matches ? "nenhum" : "todos";
+    filtersEl.querySelectorAll(".filter").forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.filter === mostrar)));
+    filtrar(mostrar);
+  } catch (e) { /* sem internet ou banco fora do ar: fica a lista do site */ }
+}
+
+/* Visitas: grava só a data, a página e de onde a pessoa veio. Nada de nome, IP ou cookie.
+   Conta uma vez por aba aberta, não conta no seu computador (localhost) nem quando você está logada no painel.
+   Dica: no link da bio use monicamasso.com.br/?origem=bio para saber quantas visitas vieram dali. */
+function origemDaVisita() {
+  const p = new URLSearchParams(location.search);
+  const marcada = p.get("origem") || p.get("utm_source");
+  if (marcada) return marcada.slice(0, 60);
+  let host = "";
+  try { host = new URL(document.referrer).hostname.replace(/^www\./, ""); } catch (e) { host = ""; }
+  if (!host || host === location.hostname) return "Direto";
+  const conhecidos = [[/instagram/, "Instagram"], [/google\./, "Google"], [/facebook|fb\.com|fb\.me/, "Facebook"], [/tiktok/, "TikTok"],
+    [/linkedin|lnkd\.in/, "LinkedIn"], [/whatsapp|wa\.me/, "WhatsApp"], [/youtube|youtu\.be/, "YouTube"], [/bing\./, "Bing"],
+    [/^t\.co$|twitter|^x\.com$/, "X (Twitter)"], [/linktr\.ee/, "Linktree"], [/pinterest/, "Pinterest"]];
+  const achou = conhecidos.find(([re]) => re.test(host));
+  return achou ? achou[1] : host.slice(0, 60);
+}
+async function registrarVisita() {
+  if (!window.banco || /^(localhost|127\.0\.0\.1)$/.test(location.hostname) || location.protocol === "file:") return;
+  const chave = "visita:" + location.pathname;
+  try { if (sessionStorage.getItem(chave)) return; } catch (e) { /* segue */ }
+  try {
+    const { data } = await banco.auth.getSession();
+    if (data && data.session) return; /* é você, logada no painel: não conta */
+    const { error } = await banco.from("visitas").insert({ pagina: (location.pathname || "/").slice(0, 300), origem: origemDaVisita() });
+    if (!error) { try { sessionStorage.setItem(chave, "1"); } catch (e) { /* ok */ } }
+  } catch (e) { /* sem banco: não conta, e o site segue normal */ }
+}
+
+/* O Supabase e o js/banco.js carregam com "defer": ficam prontos logo antes deste evento */
+window.addEventListener("DOMContentLoaded", () => { videosDoPainel(); registrarVisita(); });
 
 /* Esc fecha o menu do celular */
 document.addEventListener("keydown", (e) => {

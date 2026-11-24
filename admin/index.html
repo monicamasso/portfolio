@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="carregando">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Painel · Mônica Masso</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="painel.css">
+</head>
+<body>
+
+<aside class="menu" id="menu" aria-label="Menu do painel">
+  <a class="menu-marca" href="#portfolio">Mônica <b>Masso</b> <small>painel</small></a>
+
+  <div class="menu-secao">meu site</div>
+  <button type="button" class="menu-item" data-aba="portfolio"><span data-ic="video"></span>Portfólio</button>
+  <button type="button" class="menu-item" data-aba="marcas"><span data-ic="pessoas"></span>Marcas</button>
+
+  <div class="menu-secao">minha rotina</div>
+  <button type="button" class="menu-item" data-aba="calendario"><span data-ic="calendario"></span>Calendário</button>
+  <button type="button" class="menu-item" data-aba="campanhas"><span data-ic="maleta"></span>Campanhas</button>
+  <button type="button" class="menu-item" data-aba="checklist"><span data-ic="checklist"></span>Checklist</button>
+
+  <div class="menu-pe">
+    <a class="menu-item" href="../" target="_blank" rel="noopener"><span data-ic="externo"></span>Ver meu site</a>
+    <div class="menu-email" id="meuEmail"></div>
+    <button type="button" class="bt" id="btSair"><span data-ic="sair"></span>Sair</button>
+  </div>
+</aside>
+<div class="menu-fundo" id="menuFundo"></div>
+
+<main class="conteudo">
+  <div class="topo">
+    <button type="button" class="bt bt-icone bt-menu" id="btMenu" aria-label="Abrir menu"><span data-ic="menu"></span></button>
+    <h1 id="tituloAba">Painel</h1>
+    <div class="topo-acoes" id="acoesAba"></div>
+  </div>
+  <div class="avisos" id="avisos" aria-live="polite"></div>
+  <div class="aba" id="aba"></div>
+</main>
+
+<!-- Supabase (por CDN) e a conexão com o seu banco -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="../js/banco.js"></script>
+<!-- Conteúdo do Checklist Portfólio -->
+<script src="../js/biblioteca.js"></script>
+<!-- O painel: primeiro o núcleo (que confere a sessão), depois cada aba -->
+<script src="painel.js"></script>
+<script src="aba-portfolio.js"></script>
+<script src="aba-marcas.js"></script>
+<script src="aba-calendario.js"></script>
+<script src="aba-campanhas.js"></script>
+<script src="aba-checklist.js"></script>
+</body>
+</html>
