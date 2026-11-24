@@ -2585,24 +2585,25 @@ function handleForm(form, success) {
     }
     botao.disabled = true;
     const limite = new AbortController();
-    const prazo = setTimeout(() => limite.abort(), 75000);
+    const prazo = setTimeout(() => limite.abort(), 20000);
     try {
-      const r = await fetch("https://formsubmit.co/ajax/ugcmonicamasso@gmail.com", {
+      /* Envio pelo Web3Forms (a chave abaixo é pública e só serve para enviar mensagens ao seu e-mail) */
+      const r = await fetch("https://api.web3forms.com/submit", {
         method: "POST",
         signal: limite.signal,
         headers: { "Content-Type": "application/json", Accept: "application/json" },
         body: JSON.stringify({
-          _subject: "Novo contato pelo portfólio",
-          _template: "table",
-          _captcha: "false",
-          _honey: form.elements._honey.value,
-          nome: form.elements.nome.value.trim(),
+          access_key: "7eb408f4-7052-43e1-ba4a-ef7fbaa6e0d9",
+          subject: "Novo contato pelo portfólio",
+          from_name: "Portfólio Mônica Masso",
+          botcheck: form.elements._honey.value,
+          name: form.elements.nome.value.trim(),
           email: form.elements.email.value.trim(),
-          mensagem: form.elements.mensagem.value.trim()
+          message: form.elements.mensagem.value.trim()
         })
       });
       const dados = await r.json().catch(() => ({}));
-      if (!r.ok || dados.success === "false" || dados.success === false) throw new Error("envio");
+      if (!r.ok || dados.success !== true) throw new Error("envio");
     } catch (err) {
       clearTimeout(prazo);
       botao.disabled = false;
