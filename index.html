@@ -2585,7 +2585,7 @@ function handleForm(form, success) {
     }
     botao.disabled = true;
     const limite = new AbortController();
-    const prazo = setTimeout(() => limite.abort(), 15000);
+    const prazo = setTimeout(() => limite.abort(), 75000);
     try {
       const r = await fetch("https://formsubmit.co/ajax/ugcmonicamasso@gmail.com", {
         method: "POST",
