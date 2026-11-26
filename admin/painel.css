@@ -363,3 +363,6 @@ tr.arrastando td{background:var(--pink-suave)!important}
 .fin-bloco .tabela{table-layout:fixed;min-width:760px}
 .fin-bloco .tabela th:first-child{width:26%}
 .fin-bloco .tabela td:first-child{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+
+/* Linha rosa que mostra onde o card vai cair ao arrastar */
+.linha-soltar{height:3px;border-radius:3px;background:var(--pink);margin:-2px 2px}

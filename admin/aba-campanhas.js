@@ -117,7 +117,7 @@
     const l = lista();
     const colunas = ETAPAS;
     return `<div class="quadro">${colunas.map(([e, c]) => {
-      let itens = l.filter((x) => etapaDe(x) === e).sort((a, z) => (z.favorita - a.favorita) || String(z.criado_em || "").localeCompare(String(a.criado_em || "")));
+      let itens = ordenarColuna(e, l.filter((x) => etapaDe(x) === e));
       const total = itens.length;
       const corta = e === primeiraDoTipo("finalizada") && !verTodosFinalizados && total > 12;
       if (corta) itens = itens.slice(0, 12);
@@ -218,6 +218,41 @@
     if (area) { area.style.minHeight = "160px"; area.closest(".janela").classList.add("larga"); }
   }
 
+  /* ---------- Ordem dos cards dentro de cada coluna ----------
+     Guardada na tabela "ajustes" (chave campanhas.ordem) como { "Coluna": [ids na ordem] }.
+     Sem a tabela, fica neste navegador. */
+  let ordemCards = {};
+  async function carregarOrdem() {
+    try { ordemCards = JSON.parse(localStorage.getItem("painel-ajuste:campanhas.ordem") || "{}") || {}; } catch (e) { ordemCards = {}; }
+    try {
+      const { data, error } = await banco.from("ajustes").select("valor").eq("chave", "campanhas.ordem").maybeSingle();
+      if (!error && data && data.valor && typeof data.valor === "object" && !Array.isArray(data.valor)) ordemCards = data.valor;
+    } catch (e) { /* segue com o que tem no navegador */ }
+  }
+  async function salvarOrdem(coluna, ids) {
+    /* o card sai das outras colunas e entra nesta, na posição certa */
+    for (const k in ordemCards) ordemCards[k] = (ordemCards[k] || []).filter((x) => !ids.includes(x));
+    ordemCards[coluna] = ids;
+    try { localStorage.setItem("painel-ajuste:campanhas.ordem", JSON.stringify(ordemCards)); } catch (e) { /* ok */ }
+    try {
+      const { error } = await banco.from("ajustes").upsert({ chave: "campanhas.ordem", valor: ordemCards, atualizado_em: new Date().toISOString() });
+      if (error) throw error;
+    } catch (e) { /* sem a tabela ajustes: fica só neste navegador */ }
+  }
+  /* Ordem de exibição: primeiro os cards novos (que ainda não têm posição), depois os que você arrumou */
+  const ordenarColuna = (coluna, itens) => {
+    const lista = ordemCards[coluna] || [];
+    const pos = (x) => { const i = lista.indexOf(x.id); return i < 0 ? -1 : i; };
+    return itens.sort((a, z) => {
+      const pa = pos(a), pz = pos(z);
+      if (pa < 0 || pz < 0) {
+        if (pa < 0 && pz < 0) return (z.favorita - a.favorita) || String(z.criado_em || "").localeCompare(String(a.criado_em || ""));
+        return pa < 0 ? -1 : 1;
+      }
+      return pa - pz;
+    });
+  };
+
   async function moverPara(id, etapa) {
     const x = camps.find((c) => c.id === id);
     if (!x || etapaDe(x) === etapa) return;
@@ -256,6 +291,7 @@
       await Promise.all([P.ajustes.carregar("campanhas.etapas"), P.ajustes.carregar("campanhas.status")]);
       aplicarAjustes();
       await carregar();
+      await carregarOrdem();
       P.ler("marcas", (q) => q.select("nome")).then((m) => { nomesMarcas = [...new Set((m || []).map((x) => x.nome).filter(Boolean))].sort(); });
 
       el.innerHTML = `<div id="numerosCamp"></div>
@@ -286,6 +322,10 @@
             contar: (nome) => camps.filter((x) => (ehColuna ? etapaDe(x) : x.status) === nome).length,
             aoSalvar: async ({ renomeados, apagados }) => {
               /* as campanhas acompanham: nome novo e destino das apagadas */
+              /* coluna renomeada: a ordem dos cards dela acompanha o nome novo */
+              if (ehColuna) for (const [antigo, novo] of renomeados) {
+                if (ordemCards[antigo]) { await salvarOrdem(novo, ordemCards[antigo]); delete ordemCards[antigo]; }
+              }
               for (const [antigo, novo] of [...renomeados, ...apagados]) {
                 if (!(await P.gravar("campanhas", { [campo]: novo }, antigo, campo))) return false;
               }
@@ -321,8 +361,16 @@
         if (c && e.key === "Enter") abrirForm(camps.find((x) => x.id === Number(c.dataset.id)));
       });
 
-      /* Arrastar o card de uma coluna para outra (como no Notion) */
+      /* Arrastar o card para cima, para baixo ou para outra coluna (como no Notion).
+         Uma linha rosa mostra onde ele vai cair. */
       let arrastado = null;
+      const linha = Object.assign(document.createElement("div"), { className: "linha-soltar" });
+      /* em qual posição da coluna o card cai, pela altura do mouse */
+      const posicaoNa = (col, y) => {
+        const cards = P.$$(".card-camp:not(.arrastando)", col);
+        const depois = cards.find((c) => { const r = c.getBoundingClientRect(); return y < r.top + r.height / 2; });
+        return { cards, depois };
+      };
       el.addEventListener("dragstart", (e) => {
         const c = e.target.closest(".card-camp");
         if (!c) return;
@@ -331,22 +379,43 @@
         e.dataTransfer.effectAllowed = "move";
         e.dataTransfer.setData("text/plain", c.dataset.id);
       });
-      el.addEventListener("dragend", (e) => { const c = e.target.closest(".card-camp"); if (c) c.classList.remove("arrastando"); P.$$(".coluna.solta", el).forEach((x) => x.classList.remove("solta")); });
+      el.addEventListener("dragend", (e) => {
+        const c = e.target.closest(".card-camp");
+        if (c) c.classList.remove("arrastando");
+        P.$$(".coluna.solta", el).forEach((x) => x.classList.remove("solta"));
+        linha.remove();
+      });
       el.addEventListener("dragover", (e) => {
         const col = e.target.closest(".coluna");
         if (!col || arrastado == null) return;
         e.preventDefault();
         P.$$(".coluna.solta", el).forEach((x) => x !== col && x.classList.remove("solta"));
         col.classList.add("solta");
+        const { depois } = posicaoNa(col, e.clientY);
+        const lista = P.$(".coluna-cards", col);
+        if (depois) lista.insertBefore(linha, depois); else lista.appendChild(linha);
       });
-      el.addEventListener("drop", (e) => {
+      el.addEventListener("drop", async (e) => {
         const col = e.target.closest(".coluna");
         if (!col || arrastado == null) return;
         e.preventDefault();
         col.classList.remove("solta");
+        linha.remove();
         const id = arrastado;
         arrastado = null;
-        moverPara(id, col.dataset.etapa);
+        /* nova ordem da coluna: os cards que estão nela, com o arrastado na posição onde caiu */
+        const { cards, depois } = posicaoNa(col, e.clientY);
+        /* usa a coluna inteira (inclusive cards escondidos pela busca ou pelo "Ver mais") */
+        const etapa = col.dataset.etapa;
+        const ids = ordenarColuna(etapa, camps.filter((x) => etapaDe(x) === etapa)).map((x) => x.id).filter((x) => x !== id);
+        let pos = ids.length;
+        if (depois) pos = ids.indexOf(Number(depois.dataset.id));
+        else if (cards.length) pos = ids.indexOf(Number(cards[cards.length - 1].dataset.id)) + 1;
+        ids.splice(pos < 0 ? ids.length : pos, 0, id);
+        await salvarOrdem(col.dataset.etapa, ids);
+        const x = camps.find((c) => c.id === id);
+        if (x && etapaDe(x) !== col.dataset.etapa) await moverPara(id, col.dataset.etapa);
+        else desenhar();
       });
     }
   };
