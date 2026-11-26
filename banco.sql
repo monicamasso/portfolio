@@ -89,28 +89,61 @@ create table if not exists public.calendario (
 
 -- ---------------------------------------------------------------------
 -- 5. TABELA "campanhas"
--- Os seus trabalhos com marcas. O status segue o funil, nesta ordem:
--- Briefing, Roteiro, Aprovação Roteiro, Gravação, Edição, Aprovado, Entregue.
--- "valor" é o valor total da campanha, "qtd" é quantos vídeos.
+-- Os seus trabalhos com marcas, organizados igual ao seu Notion "Produção":
+-- etapa = a coluna do quadro (Organização, Negociação, Pré-Produção,
+-- Produção, Pós-Produção, Aguardando Pagamento, Finalizado) e status = a
+-- etiqueta do card (Aguardando Produtos, Criar Roteiro, Gravar...).
+-- "valor" é o cachê, "qtd" é quantos vídeos.
 -- ---------------------------------------------------------------------
 create table if not exists public.campanhas (
   id          bigint generated always as identity primary key,
   campanha    text not null default '',
   cliente     text not null default '',
-  tipo        text not null default 'Conteúdo'
-              check (tipo in ('Conteúdo', 'Publicidade')),
-  status      text not null default 'Briefing'
-              check (status in ('Briefing', 'Roteiro', 'Aprovação Roteiro', 'Gravação', 'Edição', 'Aprovado', 'Entregue')),
+  tipo        text not null default '',
+  status      text not null default 'Aguardando Produtos',
   qtd         integer not null default 1 check (qtd >= 0),
   valor       numeric(12, 2) not null default 0 check (valor >= 0),
   prazo       date,
-  pagamento   text not null default 'pendente'
-              check (pagamento in ('pendente', 'pago')),
+  pagamento   text not null default '',
   ativa       boolean not null default true,
   favorita    boolean not null default false,
   exemplo     boolean not null default false,
   criado_em   timestamptz not null default now()
 );
+
+-- 5.1 Campos do Notion. Se a tabela já existia (do jeito antigo), aqui ela
+-- ganha os campos novos e as opções ficam livres, como no Notion.
+-- Nada que você já cadastrou é apagado.
+alter table public.campanhas add column if not exists etapa text not null default 'Organização';
+alter table public.campanhas add column if not exists emoji text not null default '';
+alter table public.campanhas add column if not exists permuta numeric(12, 2) not null default 0;
+alter table public.campanhas add column if not exists nota_fiscal text not null default '';
+alter table public.campanhas add column if not exists contrato text not null default '';
+alter table public.campanhas add column if not exists prioridade text not null default '';
+alter table public.campanhas add column if not exists plataforma text not null default '';
+alter table public.campanhas add column if not exists telefone text not null default '';
+alter table public.campanhas add column if not exists previsao_pagamento date;
+alter table public.campanhas add column if not exists obs text not null default '';
+alter table public.campanhas add column if not exists notion_url text not null default '';
+
+alter table public.campanhas drop constraint if exists campanhas_tipo_check;
+alter table public.campanhas drop constraint if exists campanhas_status_check;
+alter table public.campanhas drop constraint if exists campanhas_pagamento_check;
+alter table public.campanhas alter column tipo set default '';
+alter table public.campanhas alter column status set default 'Aguardando Produtos';
+alter table public.campanhas alter column pagamento set default '';
+
+-- Traduz o que estava no formato antigo para o formato do Notion
+update public.campanhas set pagamento = 'Nada pago' where pagamento = 'pendente';
+update public.campanhas set pagamento = 'Pago' where pagamento = 'pago';
+update public.campanhas set status = 'Aguardando Produtos', etapa = 'Organização' where status = 'Briefing';
+update public.campanhas set status = 'Criar Roteiro', etapa = 'Pré-Produção' where status = 'Roteiro';
+update public.campanhas set status = 'Aguardando Apv. Roteiro', etapa = 'Pré-Produção' where status = 'Aprovação Roteiro';
+update public.campanhas set status = 'Gravar', etapa = 'Produção' where status = 'Gravação';
+update public.campanhas set status = 'Editar', etapa = 'Pós-Produção' where status = 'Edição';
+update public.campanhas set status = 'Postar', etapa = 'Pós-Produção' where status = 'Aprovado';
+update public.campanhas set status = 'Concluído', etapa = 'Finalizado' where status = 'Entregue';
+update public.campanhas set tipo = 'UGC' where tipo in ('Conteúdo', 'Publicidade');
 
 
 -- ---------------------------------------------------------------------
@@ -297,8 +330,8 @@ insert into public.calendario (titulo, marca, tipo, data, status, exemplo)
 select 'Exemplo: apague esta linha', 'Marca Exemplo', 'gravar', current_date + 2, 'a fazer', true
 where not exists (select 1 from public.calendario);
 
-insert into public.campanhas (campanha, cliente, tipo, status, qtd, valor, prazo, pagamento, ativa, favorita, exemplo)
-select 'Exemplo: apague esta linha', 'Marca Exemplo', 'Conteúdo', 'Briefing', 1, 0, current_date + 7, 'pendente', true, false, true
+insert into public.campanhas (campanha, cliente, tipo, status, etapa, qtd, valor, prazo, pagamento, ativa, favorita, exemplo)
+select 'Exemplo: apague esta linha', 'Marca Exemplo', 'UGC', 'Aguardando Produtos', 'Organização', 1, 0, current_date + 7, 'Nada pago', true, false, true
 where not exists (select 1 from public.campanhas);
 
 

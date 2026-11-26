@@ -18,7 +18,7 @@
   function doDia(iso) {
     const a = itens.filter((i) => String(i.data).slice(0, 10) === iso).map((i) => ({ ...i, _tipo: i.tipo || "gravar" }));
     const b = prazos.filter((c) => String(c.prazo).slice(0, 10) === iso).map((c) => ({
-      _prazo: true, _tipo: "prazo", id: c.id, titulo: c.campanha || "Campanha", marca: c.cliente, status: c.status === "Entregue" ? "feito" : "a fazer"
+      _prazo: true, _tipo: "prazo", id: c.id, titulo: c.campanha || "Campanha", marca: c.cliente, status: (c.status === "Entregue" || c.status === "Concluído" || c.etapa === "Finalizado") ? "feito" : "a fazer"
     }));
     return [...a, ...b]
       .filter((x) => filtro === "todos" || x._tipo === filtro)
@@ -122,7 +122,7 @@
   async function carregar() {
     const [lidos, camps] = await Promise.all([
       P.ler("calendario", (q) => q.select("*").order("data", { ascending: true })),
-      P.ler("campanhas", (q) => q.select("id,campanha,cliente,prazo,status,ativa").not("prazo", "is", null))
+      P.ler("campanhas", (q) => q.select("id,campanha,cliente,prazo,status,ativa,etapa").not("prazo", "is", null))
     ]);
     itens = lidos || [];
     prazos = (camps || []).filter((c) => c.ativa !== false);

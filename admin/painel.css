@@ -309,3 +309,32 @@ tr.arrastando td{background:var(--pink-suave)!important}
   .ferramentas .direita{margin-left:0}
   .sub-abas{border-radius:16px}
 }
+
+/* =====================================================================
+   CAMPANHAS EM QUADRO (igual ao Notion "Produção")
+   ===================================================================== */
+.pilula.p-laranja{background:#fdebdc;color:#b4561a}
+.pilula.p-marrom{background:#f1e6dd;color:#8a5a3b}
+.caixa-quadro{background:transparent;padding:0;box-shadow:none}
+.caixa-quadro > .ferramentas{background:var(--white);border-radius:var(--raio-grande);padding:10px 12px}
+.quadro{display:flex;gap:12px;overflow-x:auto;padding-bottom:10px;align-items:flex-start}
+.coluna{flex:0 0 248px;border-radius:14px;padding:10px 8px 8px;display:flex;flex-direction:column;gap:8px;transition:box-shadow .15s}
+.coluna.solta{box-shadow:inset 0 0 0 2px var(--pink)}
+.col-cinza{background:#f3f3f2}.col-rosa{background:#fbeff5}.col-roxo{background:#f5f0fa}.col-amarelo{background:#fbf6e8}
+.col-azul{background:#eef4fb}.col-verde{background:#eef6f1}
+.coluna-topo{display:flex;align-items:center;gap:8px;padding:0 4px}
+.coluna-topo small{color:var(--gray-claro);font-size:12px}
+.coluna-cards{display:flex;flex-direction:column;gap:8px;min-height:20px}
+.card-camp{background:var(--white);border-radius:10px;padding:10px 11px;box-shadow:0 1px 2px rgba(0,0,0,.08);cursor:pointer;display:grid;gap:6px;position:relative}
+.card-camp:hover{box-shadow:0 4px 14px -6px rgba(0,0,0,.25)}
+.card-camp.favorita{box-shadow:inset 3px 0 0 var(--pink),0 1px 2px rgba(0,0,0,.08)}
+.card-camp.arrastando{opacity:.45}
+.card-nome{font-weight:500;font-size:13px;line-height:1.3}
+.emoji-card{margin-right:6px}
+.card-pilulas{display:flex;flex-wrap:wrap;gap:4px}
+.card-datas{display:grid;gap:2px}
+.card-data{display:flex;align-items:center;gap:5px;font-size:11.5px;color:var(--gray)}
+.card-valor{font-size:11.5px;color:var(--gray-claro)}
+.coluna-mais,.coluna-nova{display:flex;align-items:center;gap:6px;border:0;background:none;border-radius:8px;padding:6px 8px;font-size:12.5px;color:var(--gray);cursor:pointer;text-align:left}
+.coluna-mais:hover,.coluna-nova:hover{background:rgba(0,0,0,.05);color:var(--ink)}
+@media (max-width:900px){.coluna{flex-basis:78vw}}
