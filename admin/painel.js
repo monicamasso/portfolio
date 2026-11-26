@@ -11,6 +11,12 @@ const sessaoConferida = (async () => {
   try {
     const { data } = await banco.auth.getSession();
     if (!data || !data.session) { location.replace("../login/"); return null; }
+    /* Só o e-mail da dona entra. Qualquer outra conta é desconectada na hora. */
+    if (String(data.session.user.email || "").toLowerCase() !== "ugcmonicamasso@gmail.com") {
+      await banco.auth.signOut().catch(() => {});
+      location.replace("../login/?sem-acesso=1");
+      return null;
+    }
     return { sessao: data.session };
   } catch (e) {
     location.replace("../login/");

@@ -76,6 +76,7 @@ if (!window.banco) {
   mostrar($("#erroEntrar"), "Não consegui carregar a conexão com o banco. Confira a internet e recarregue a página.");
 } else {
   /* Se já tem sessão aberta, vai direto pro painel (menos quando chegou pelo e-mail de nova senha) */
+  if (/sem-acesso=1/.test(location.search)) mostrar($("#erroEntrar"), "Esse e-mail não tem acesso ao painel.");
   if (voltouPeloEmail) {
     $("#formEntrar").hidden = true;
     $("#formNovaSenha").hidden = false;
