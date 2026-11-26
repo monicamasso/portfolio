@@ -257,6 +257,15 @@ create table if not exists public.financeiro (
 
 create index if not exists financeiro_campanha_idx on public.financeiro (campanha_id);
 
+-- 7.3.1 Parcela: '' = pagamento único, '1/2' e '2/2' = metade antes e metade depois.
+-- Tira o "1/2" / "2/2" do fim do nome e passa para este campo.
+alter table public.financeiro add column if not exists parcela text not null default '';
+update public.financeiro
+   set parcela = substring(marca from '(\d+\s*/\s*\d+)\s*$'),
+       marca   = trim(regexp_replace(marca, '\s*\d+\s*/\s*\d+\s*$', ''))
+ where marca ~ '\d+\s*/\s*\d+\s*$' and parcela = '';
+update public.financeiro set parcela = replace(parcela, ' ', '') where parcela like '% %';
+
 alter table public.financeiro enable row level security;
 
 drop policy if exists "dona faz tudo" on public.financeiro;

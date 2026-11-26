@@ -23,6 +23,11 @@
     return `Fechamento ${MESES[Number(m) - 1] || m}${a !== String(new Date().getFullYear()) ? " " + a : ""}`;
   };
   const recebidoDe = (x) => x.status === "Recebido";
+  /* Parcela: "" = pagamento único, "1/2" e "2/2" = metade antes e metade depois */
+  const PARCELAS = [["", "Pagamento único"], ["1/2", "1/2 (primeira metade)"], ["2/2", "2/2 (segunda metade)"], ["1/3", "1/3"], ["2/3", "2/3"], ["3/3", "3/3"]];
+  const RE_PARCELA = /\s*(\d+)\s*\/\s*(\d+)\s*$/;
+  let temParcela = true; /* o banco já tem o campo "parcela"? (vem do banco.sql) */
+  const pilulaParcela = (p) => (p ? `<span class="pilula p-amarelo" title="Pagamento dividido: parcela ${P.esc(p)}">${P.esc(p)}</span>` : `<span class="pilula" title="Pagamento único">Único</span>`);
 
   /* ---------- Ligação com as campanhas ---------- */
   const modalidadeDoTipo = (t) => ({ "UGC": "UGC", "Tiktok Shop": "Tiktok Shop", "Tiktok": "Influencer", "Reels Collab": "Influencer", "Reels sem Collab": "Influencer" }[t] || "");
@@ -110,9 +115,10 @@
       <div class="caixa-titulo"><h2>${P.esc(nomeFechamento(fechamento))}</h2>
         <button type="button" class="bt" style="height:28px;margin-left:auto" data-novo-fin="${P.esc(fechamento)}">${P.ic("mais", "ic-p")}Nova</button></div>
       <div class="tabela-rolagem"><table class="tabela">
-        <thead><tr><th>Marca</th><th>Recebido</th><th>Receber até</th>${extras ? "<th>ADS até</th>" : ""}<th class="num">Cachê</th><th class="num">Produto</th>${extras ? '<th class="num">Gasto</th>' : ""}<th>Status</th><th>Modalidade</th></tr></thead>
+        <thead><tr><th>Marca</th><th style="width:90px">Pagamento</th><th>Recebido</th><th>Receber até</th>${extras ? "<th>ADS até</th>" : ""}<th class="num">Cachê</th><th class="num">Produto</th>${extras ? '<th class="num">Gasto</th>' : ""}<th>Status</th><th>Modalidade</th></tr></thead>
         <tbody>${ordenadas.map((x) => `<tr class="clicavel" data-id="${x.id}">
           <td><b style="font-weight:500">${P.esc(x.marca || "(sem nome)")}</b>${x.pessoa === "Casal" ? ' <span class="pilula p-verde" title="Recebimento do casal: aqui está só a sua metade">casal</span>' : ""}${x.campanha_id ? ` <span class="fraco" title="Ligado a uma campanha">${P.ic("maleta", "ic-p")}</span>` : ""}${P.seloExemplo(x)}</td>
+          <td>${pilulaParcela(x.parcela)}</td>
           <td class="fraco" style="white-space:nowrap">${P.dataBR(x.recebido)}</td>
           <td class="fraco" style="white-space:nowrap">${P.dataBR(x.receber_ate)}${etiquetaAtraso(x)}</td>
           ${extras ? `<td class="fraco">${P.dataBR(x.ads_ate)}</td>` : ""}
@@ -121,8 +127,8 @@
           ${extras ? `<td class="num fraco">${P.num(x.gasto) ? P.moeda(x.gasto) : ""}</td>` : ""}
           <td>${pilula(STATUS, x.status, true)}</td>
           <td>${pilula(MODALIDADES, x.modalidade)}</td>
-        </tr>`).join("") || `<tr><td colspan="9" class="vazio">Nada aqui ainda.</td></tr>`}</tbody>
-        <tfoot><tr class="fin-rodape"><td>contagem ${linhas.length}</td><td></td><td></td>${extras ? "<td></td>" : ""}<td class="num">soma ${P.moeda(soma("cache"))}</td><td class="num">soma ${P.moeda(soma("produto"))}</td>${extras ? `<td class="num">soma ${P.moeda(soma("gasto"))}</td>` : ""}<td></td><td></td></tr></tfoot>
+        </tr>`).join("") || `<tr><td colspan="10" class="vazio">Nada aqui ainda.</td></tr>`}</tbody>
+        <tfoot><tr class="fin-rodape"><td>contagem ${linhas.length}</td><td></td><td></td><td></td>${extras ? "<td></td>" : ""}<td class="num">soma ${P.moeda(soma("cache"))}</td><td class="num">soma ${P.moeda(soma("produto"))}</td>${extras ? `<td class="num">soma ${P.moeda(soma("gasto"))}</td>` : ""}<td></td><td></td></tr></tfoot>
       </table></div>
     </div>`;
   }
@@ -154,6 +160,7 @@
       valores: x ? { ...x, campanha_id: x.campanha_id ? String(x.campanha_id) : "" } : { fechamento, status: "Em andamento", campanha_id: "" },
       campos: [
         { n: "marca", r: "Marca", obrig: true, lista: [...new Set(camps.map((c) => c.campanha))] },
+        { n: "parcela", r: "Pagamento", tipo: "opcoes", meia: true, opcoes: PARCELAS, ajuda: "Único ou dividido (metade antes e metade depois)" },
         { n: "campanha_id", r: "Ligado à campanha", tipo: "opcoes", meia: true, opcoes: opCamp, ajuda: "Quando marcar Recebido, a campanha fica como Paga sozinha" },
         { n: "fechamento", r: "Fechamento", tipo: "opcoes", meia: true, opcoes: opcoesFechamento(x && x.fechamento) },
         { n: "recebido", r: "Recebido em", tipo: "data", meia: true },
@@ -167,6 +174,12 @@
       ],
       salvar: async (dados) => {
         dados.campanha_id = dados.campanha_id ? Number(dados.campanha_id) : null;
+        /* sem o campo "parcela" no banco ainda: guarda a parcela no fim do nome, como era antes */
+        if (!temParcela) {
+          if (dados.parcela) dados.marca = `${dados.marca} ${dados.parcela}`;
+          delete dados.parcela;
+          P.avisar("parcela-sql", "Para a coluna Pagamento (Único, 1/2, 2/2) ficar salva direitinho, rode o banco.sql de novo no Supabase.");
+        }
         /* Marcou Recebido: preenche a data e leva para o mês certo */
         if (dados.status === "Recebido") {
           if (!dados.recebido) dados.recebido = P.hoje();
@@ -194,8 +207,8 @@
     if (!l.length) { P.toast("Não tem nada para baixar ainda", true); return; }
     const din = (v) => P.num(v).toFixed(2).replace(".", ",");
     P.baixarCSV(`financeiro-${P.hoje()}.csv`,
-      ["Fechamento", "Marca", "Recebido", "Receber até", "Cachê", "Produto", "Gasto", "Status", "Modalidade"],
-      l.map((x) => [nomeFechamento(x.fechamento), x.marca, P.dataBR(x.recebido), P.dataBR(x.receber_ate), din(x.cache), din(x.produto), din(x.gasto), x.status, x.modalidade]));
+      ["Fechamento", "Marca", "Pagamento", "Recebido", "Receber até", "Cachê", "Produto", "Gasto", "Status", "Modalidade"],
+      l.map((x) => [nomeFechamento(x.fechamento), x.marca, x.parcela || "Único", P.dataBR(x.recebido), P.dataBR(x.receber_ate), din(x.cache), din(x.produto), din(x.gasto), x.status, x.modalidade]));
   }
 
   async function carregar() {
@@ -205,6 +218,12 @@
     ]);
     /* seus recebimentos e os de casal (que entram com a sua metade) */
     itens = (lidos || []).filter((x) => !x.pessoa || x.pessoa === "Mônica" || x.pessoa === "Casal");
+    temParcela = !itens.length || "parcela" in itens[0];
+    /* "Truth 1/2" vira marca "Truth" + parcela "1/2" (até o banco.sql fazer isso de vez) */
+    itens.forEach((x) => {
+      const m = String(x.marca || "").match(RE_PARCELA);
+      if (m && !x.parcela) { x.parcela = `${m[1]}/${m[2]}`; x.marca = x.marca.replace(RE_PARCELA, "").trim(); }
+    });
     camps = cs || [];
     P.conferirCampos("financeiro", itens, CAMPOS);
   }
