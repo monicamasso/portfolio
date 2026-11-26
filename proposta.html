@@ -1246,10 +1246,10 @@
   @media (max-width:900px){section{padding:42px 0}#destaques{padding:18px 0 40px}.head{margin-bottom:24px}.area{margin-top:44px}}
 
   /* ===== Manuscrita só no nome da capa e no rodapé; o resto usa Playfair Display em itálico ===== */
-  .title em,.note,.signature,.signature small,.hl-label,.vid-type,.metric span,#numeros .metric span,.result-brand,#numeros .result-brand,:is(#numeros,#insta) .result-brand,
+  .title:where(:not(#destaques-title,#trabalhos-title,#carrosseis-title,#fotos-title)) em,.note,.signature,.signature small,.hl-label,.vid-type,.metric span,#numeros .metric span,.result-brand,#numeros .result-brand,:is(#numeros,#insta) .result-brand,
   .carousel-hint,#sobre-title .oi,.sobre-linhas .tit em,#numeros .print figcaption,.carrossel-folha .rot,.carrossel-stats > .rot,.foto figcaption,.caderno-iphone,.pacote .rot,.dif .rot,.est-titulo em,.polaroid-sign{
-    font-family:"Playfair Display",Georgia,serif!important;font-style:italic!important;font-weight:400;letter-spacing:-.04em!important;text-transform:none}
-  .title em{font-size:.92em!important;transform:none!important;margin:0!important;position:static!important;line-height:1.1!important}
+    font-family:"Playfair Display",Georgia,serif!important;font-style:italic!important;font-weight:400;letter-spacing:-.065em!important;text-transform:none}
+  .title:where(:not(#destaques-title,#trabalhos-title,#carrosseis-title,#fotos-title)) em{font-size:.92em!important;transform:none!important;margin:0!important;position:static!important;line-height:1.1!important}
   #servicos .title em,#numeros .title em{display:block;width:max-content;max-width:100%;margin:.04em 0 0!important}
   #sobre-title .oi{position:static!important;display:block;transform:none!important;font-size:clamp(1.5rem,2.6vw,2.2rem)!important}
   .sobre-linhas .tit{padding-bottom:0!important}
@@ -1264,8 +1264,7 @@
   #numeros .print figcaption{font-size:1.3rem!important}
   .pacote .rot{font-size:2.3rem!important}
   .dif .rot{font-size:1.7rem!important}
-  #destaques .hl-label,.hl-label{font-size:1.25rem!important;margin:4px 0 0!important;padding-left:0!important;transform:none!important}
-  #destaques .title em{display:block;width:max-content;max-width:100%}
+  #destaques .hl-label,.hl-label{font-size:1.25rem!important;margin:-6px 0 16px!important;padding-left:0!important;transform:none!important}
   .carousel-hint{font-size:1.3rem!important}
   .caderno-iphone{font-size:clamp(.8rem,1.2vw,1.1rem)!important}
 
@@ -1313,6 +1312,8 @@
   .capa-cartoes .c4{right:-14%;top:66%;transform:rotate(-3deg)}
   @media (min-width:901px){.hero.hero-foto .hero-stats{display:none}}
   @media (max-width:900px){.capa-deco{display:none}}
+  /* Contador de vídeos maior */
+  .carousel-hint .hint-num{font-size:1.15em;color:var(--ink);vertical-align:baseline}
 </style>
 </head>
 <body>
@@ -1616,7 +1617,7 @@
       </section>
       <div class="area area-influ reveal">
         <span class="area-num" aria-hidden="true">02</span>
-        <div><p class="area-eyebrow">Instagram</p><h3 class="area-titulo">Influencer digital <span class="area-logo" role="img" aria-label="Instagram"><svg viewBox="0 0 24 24" aria-hidden="true"><defs><linearGradient id="igGrad" x1="0" y1="1" x2="1" y2="0"><stop offset="0" stop-color="#feda75"/><stop offset=".3" stop-color="#fa7e1e"/><stop offset=".55" stop-color="#d62976"/><stop offset=".8" stop-color="#962fbf"/><stop offset="1" stop-color="#4f5bd5"/></linearGradient></defs><rect width="24" height="24" rx="6.5" fill="url(#igGrad)"/><g fill="none" stroke="#fff" stroke-width="1.9"><rect x="5" y="5" width="14" height="14" rx="4.2"/><circle cx="12" cy="12" r="3.4"/></g><circle cx="16.6" cy="7.4" r="1.1" fill="#fff"/></svg></span></h3></div>
+        <div><p class="area-eyebrow">Instagram</p><h3 class="area-titulo">Influencer digital <span class="area-logo" role="img" aria-label="Instagram"><svg viewBox="0 0 24 24" aria-hidden="true"><defs><linearGradient id="igGrad" x1="0" y1="1" x2="1" y2="0"><stop offset="0" stop-color="#feda75"/><stop offset=".3" stop-color="#fa7e1e"/><stop offset=".55" stop-color="#d62976"/><stop offset=".8" stop-color="#962fbf"/><stop offset="1" stop-color="#4f5bd5"/></linearGradient></defs><rect width="24" height="24" rx="6.5" fill="var(--pink)"/><g fill="none" stroke="#fff" stroke-width="1.9"><rect x="5" y="5" width="14" height="14" rx="4.2"/><circle cx="12" cy="12" r="3.4"/></g><circle cx="16.6" cy="7.4" r="1.1" fill="#fff"/></svg></span></h3></div>
         <p class="area-desc">Conteúdo publicado no meu Instagram, em colaboração com a marca, para compartilharmos o engajamento e a audiência.</p>
       </div>
       <section class="insta reveal" id="insta" aria-labelledby="insta-titulo">
