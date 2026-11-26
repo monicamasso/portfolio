@@ -1191,40 +1191,31 @@
     :is(#numeros,#insta) .result.com-lado .result-print{margin-top:18px}
   }
 
-  /* ===== CAPA EM TELA INTEIRA (foto de estúdio): o cinza do ensaio vira o fundo e o texto fica à esquerda ===== */
-  .header{background:rgba(235,235,235,.94);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
+  /* ===== CAPA EM TELA INTEIRA: foto recortada (sem fundo) sobre o fundo claro do site, com o texto à esquerda ===== */
   .hero.hero-foto{min-height:0;padding:var(--header-h) 0 0;justify-content:flex-start}
-  .hero-foto .capa-tela{position:relative;overflow:hidden;color:#fff;min-height:calc(100vh - var(--header-h));min-height:calc(100svh - var(--header-h));display:flex;align-items:center;
-    background:radial-gradient(60% 90% at 74% 40%,#7a797b,#4b4a4c 62%,#302f31)}
-  .hero-foto .capa-img{position:absolute;bottom:0;right:max(0px,calc(50% - 640px));height:100%;width:auto;max-width:none;
-    -webkit-mask-image:linear-gradient(90deg,transparent,#000 24%,#000 80%,transparent);mask-image:linear-gradient(90deg,transparent,#000 24%,#000 80%,transparent)}
+  .hero-foto .capa-tela{position:relative;overflow:hidden;min-height:calc(100vh - var(--header-h));min-height:calc(100svh - var(--header-h));display:flex;align-items:center}
+  .hero-foto .capa-img{position:absolute;bottom:0;right:max(0px,calc(50% - 640px));height:97%;width:auto;max-width:none}
   .hero-foto .capa-tela > .wrap{position:relative;z-index:2;width:100%;min-height:0;display:block;padding-top:3vh;padding-bottom:3vh}
   .hero-foto .hero-texto{display:flex;flex-direction:column;gap:clamp(14px,3vh,34px);max-width:min(600px,54%)}
-  .hero-foto .hero-kicker{margin-bottom:clamp(10px,2vh,22px);color:var(--ink);background:#fff}
-  .hero-foto h1{font-size:clamp(3.2rem,min(10vw,17vh),9rem);text-shadow:0 6px 30px rgba(0,0,0,.25)}
-  .hero-foto h1 .h1-assina{color:#fff;text-shadow:0 2px 10px rgba(0,0,0,.55)}
-  .hero-foto .chips li{color:var(--ink);background:#fff}
-  .hero-foto .hero-phrase{margin-top:0;color:#ece9ea;text-shadow:0 1px 8px rgba(0,0,0,.45)}
-  .hero-foto .hero-phrase strong{color:#fff;font-weight:700;border-bottom:2px solid var(--pink)}
+  .hero-foto .hero-kicker{margin-bottom:clamp(10px,2vh,22px)}
+  .hero-foto h1{font-size:clamp(3.2rem,min(10vw,17vh),9rem)}
+  .hero-foto .hero-phrase{margin-top:0}
   .hero-foto .hero-stats{display:grid;grid-template-columns:repeat(3,auto);justify-content:start;gap:clamp(20px,3vw,44px);margin-top:clamp(10px,2vh,22px);max-width:none}
   .hero-foto .hero-stats li{display:block;padding:0;border:0;border-radius:0;background:none;box-shadow:none;text-align:left}
-  .hero-foto .hero-stats strong{color:#fff;font-size:clamp(1.5rem,3.8vh,2.3rem)}
-  .hero-foto .hero-stats span{display:block;margin-top:2px;color:#d8d5d6;font-size:.8rem}
+  .hero-foto .hero-stats strong{font-size:clamp(1.5rem,3.8vh,2.3rem)}
+  .hero-foto .hero-stats span{display:block;margin-top:2px;font-size:.8rem}
   .hero-foto .hero-btns{margin-top:0}
-  .hero-foto .btn-lime{background:var(--pink);border-color:var(--pink);color:#fff}
-  .hero-foto .btn-lime .spark{color:#fff}
-  .hero-foto .proof{color:#e4e1e2}
-  .hero-foto .proof strong{color:#fff}
   .hero-foto .brands{margin-top:0}
   @media (max-width:900px){
-    .hero-foto .capa-tela{display:block;min-height:0;background:#353436}
-    .hero-foto .capa-img{position:static;display:block;width:100%;height:72vh;height:72svh;object-fit:cover;object-position:center 18%;
-      -webkit-mask-image:linear-gradient(#000 62%,transparent);mask-image:linear-gradient(#000 62%,transparent)}
-    .hero-foto .capa-tela > .wrap{margin-top:-24vh;margin-top:-24svh;padding-top:0;padding-bottom:34px}
+    .hero-foto .capa-tela{display:block;min-height:0}
+    .hero-foto .capa-img{position:static;display:block;width:100%;height:58vh;height:58svh;object-fit:contain;object-position:center bottom;margin-top:6px;
+      -webkit-mask-image:linear-gradient(#000 80%,transparent);mask-image:linear-gradient(#000 80%,transparent)}
+    .hero-foto .capa-tela > .wrap{margin-top:-6vh;margin-top:-6svh;padding-top:0;padding-bottom:34px}
     .hero-foto .hero-texto{max-width:none;gap:24px}
-    .hero.hero-foto h1{font-size:clamp(3.4rem,18.5vw,7rem);padding-bottom:.62em}
+    .hero.hero-foto h1{font-size:clamp(3.4rem,18.5vw,7rem);padding-bottom:.62em;margin-bottom:0}
     .hero.hero-foto h1 .h1-assina{font-size:.88em !important;bottom:-.04em !important;right:-.06em !important}
-    .hero-foto .chips{margin-top:0}
+    .hero.hero-foto .chips{margin-top:-34px}
+    .hero.hero-foto .hero-kicker{margin-bottom:4px}
     .hero-foto .hero-stats{grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
     .hero-foto .hero-stats strong{font-size:1.5rem}
   }
@@ -1257,8 +1248,8 @@
   <!-- ===================== 1. CAPA ===================== -->
   <section class="hero hero-foto" id="inicio" aria-labelledby="hero-title">
     <div class="capa-tela">
-      <!-- FOTO DA CAPA (tela inteira): para trocar, substitua img/capa-foto.jpg por outra foto vertical em fundo liso -->
-      <img class="capa-img" src="img/capa-foto.jpg" alt="Mônica Masso sorrindo, com a mão no queixo" width="1500" height="2250" fetchpriority="high">
+      <!-- FOTO DA CAPA (tela inteira): para trocar, substitua img/capa-recorte.png por outra foto vertical SEM fundo (PNG transparente) -->
+      <img class="capa-img" src="img/capa-recorte.png" alt="Mônica Masso sorrindo, com a mão no queixo" width="900" height="1350" fetchpriority="high">
       <div class="wrap">
         <div class="hero-texto">
          <!-- Bloco 1: quem sou -->
