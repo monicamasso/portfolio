@@ -147,6 +147,9 @@ P.erroAmigavel = (erro, tabela) => {
   return `Não consegui falar com a tabela "${tabela}" agora. Tente de novo em instantes.`;
 };
 
+P.faltando = new Set();
+P.tabelaFalta = (e) => /^(42P01|PGRST205)$/.test(String(e && e.code)) || /could not find the table|relation .* does not exist/i.test(String(e && e.message));
+
 /* Lê uma tabela. Se der problema, avisa e devolve null (o resto do painel segue). */
 P.ler = async (tabela, montar = (q) => q.select("*")) => {
   try {
@@ -154,6 +157,14 @@ P.ler = async (tabela, montar = (q) => q.select("*")) => {
     if (error) throw error;
     return data || [];
   } catch (e) {
+    /* Tabela que não existe: junta todas num aviso só, com o passo a passo */
+    if (P.tabelaFalta(e)) {
+      P.faltando.add(tabela);
+      P.avisar("tabelas-faltando", `O banco ainda não foi preparado: faltam as tabelas ${[...P.faltando].join(", ")}. ` +
+        `Para resolver: no site do Supabase, abra o projeto, clique em SQL Editor e depois em New query, cole o arquivo banco.sql inteiro e clique em Run. ` +
+        `Se aparecer "Success", recarregue esta página. Se aparecer uma mensagem de erro, me mande um print dela.`);
+      return null;
+    }
     P.avisar("ler:" + tabela, P.erroAmigavel(e, tabela));
     /* Se o problema é um campo que falta, tenta de novo lendo a tabela do jeito mais simples */
     if (/42703|PGRST204|PGRST100/.test(String(e && e.code)) || /column/i.test(String(e && e.message))) {

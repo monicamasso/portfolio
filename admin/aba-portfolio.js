@@ -35,7 +35,7 @@
     const origem = Object.entries(porOrigem).sort((a, b) => b[1] - a[1])[0];
     const total = visitas ? visitas.length : 0;
     const deHoje = visitas ? visitas.filter((v) => P.iso(new Date(v.data)) === hoje).length : 0;
-    const semVisitas = visitas === null ? "sem acesso" : "0";
+    const semVisitas = visitas === null ? "sem dados" : "0";
     return `<div class="numeros">
       <div class="numero"><span>Visitas em 14 dias</span><strong>${visitas === null ? semVisitas : total}</strong></div>
       <div class="numero"><span>Visitas hoje</span><strong>${visitas === null ? semVisitas : deHoje}</strong></div>
