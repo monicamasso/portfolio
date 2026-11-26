@@ -96,6 +96,8 @@
   /* ---------- Visão QUADRO ---------- */
   function card(x) {
     const datas = [
+      x.dia_gravacao ? `<span class="card-data">${P.ic("video", "ic-p")}gravar ${P.dataBR(x.dia_gravacao)}</span>` : "",
+      x.dia_edicao ? `<span class="card-data">${P.ic("editar", "ic-p")}editar ${P.dataBR(x.dia_edicao)}</span>` : "",
       x.prazo ? `<span class="card-data">${P.ic("calendario", "ic-p")}entrega ${P.dataBR(x.prazo)}</span>` : "",
       x.previsao_pagamento ? `<span class="card-data">${P.ic("maleta", "ic-p")}pagamento ${P.dataBR(x.previsao_pagamento)}</span>` : ""
     ].join("");
@@ -173,6 +175,8 @@
         { n: "permuta", r: "Valor da permuta (R$)", tipo: "dinheiro", meia: true },
         { n: "qtd", r: "Quantidade de vídeos", tipo: "numero", meia: true },
         { n: "pagamento", r: "Pagamento", tipo: "opcoes", meia: true, opcoes: op(PAGAMENTOS) },
+        { n: "dia_gravacao", r: "Dia de gravação", tipo: "data", meia: true, ajuda: "Aparece sozinho no Calendário" },
+        { n: "dia_edicao", r: "Dia de edição", tipo: "data", meia: true, ajuda: "Aparece sozinho no Calendário" },
         { n: "prazo", r: "Prazo de entrega", tipo: "data", meia: true },
         { n: "previsao_pagamento", r: "Previsão de pagamento", tipo: "data", meia: true },
         { n: "nota_fiscal", r: "Nota fiscal", tipo: "opcoes", meia: true, opcoes: op(NOTAS) },
@@ -244,6 +248,8 @@
         </div>`;
       P.$("#buscaCamp", el).value = busca;
       desenhar();
+      /* Vindo do Calendário: já abre a ficha da campanha clicada */
+      if (opcoes.abrir) { const x = camps.find((c) => c.id === Number(opcoes.abrir)); if (x) abrirForm(x); }
       P.$("#buscaCamp", el).addEventListener("input", (e) => { busca = e.target.value; desenhar(); });
       P.$("#btBaixarCamp", el).addEventListener("click", baixar);
 

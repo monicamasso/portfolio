@@ -125,6 +125,9 @@ alter table public.campanhas add column if not exists telefone text not null def
 alter table public.campanhas add column if not exists previsao_pagamento date;
 alter table public.campanhas add column if not exists obs text not null default '';
 alter table public.campanhas add column if not exists notion_url text not null default '';
+-- Dias de gravação e de edição: quando preenchidos, a campanha aparece sozinha no Calendário
+alter table public.campanhas add column if not exists dia_gravacao date;
+alter table public.campanhas add column if not exists dia_edicao date;
 
 alter table public.campanhas drop constraint if exists campanhas_tipo_check;
 alter table public.campanhas drop constraint if exists campanhas_status_check;

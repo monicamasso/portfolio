@@ -14,12 +14,29 @@
 
   const nomeTipo = (t) => (t === "prazo" ? "Prazo" : (TIPOS.find((x) => x[0] === t) || [t, t])[1]);
 
-  /* Junta os itens do calendário com os prazos das campanhas */
+  /* Campanhas: a gravação conta como feita quando a campanha chega na Pós-Produção,
+     a edição quando chega em aprovação, postagem ou depois, e o prazo quando foi concluída */
+  const ETAPAS = ["Organização", "Negociação", "Pré-Produção", "Produção", "Pós-Produção", "Aguardando Pagamento", "Finalizado"];
+  const DEPOIS_DA_EDICAO = ["Enviar para Aprovação", "Aguardando Aprovação", "Postar", "Aguardando Pagamento", "Emitir NF", "Concluído", "Entregue"];
+  const etapaPos = (c) => ETAPAS.indexOf(c.etapa || (c.ativa === false ? "Finalizado" : "Organização"));
+  const concluida = (c) => c.status === "Entregue" || c.status === "Concluído" || c.etapa === "Finalizado" || c.ativa === false;
+  const gravou = (c) => concluida(c) || etapaPos(c) >= ETAPAS.indexOf("Pós-Produção");
+  const editou = (c) => concluida(c) || etapaPos(c) >= ETAPAS.indexOf("Aguardando Pagamento") || DEPOIS_DA_EDICAO.includes(c.status);
+
+  /* Os compromissos que vêm sozinhos das campanhas: gravar, editar e prazo de entrega */
+  function daCampanha(c) {
+    const base = { _camp: true, id: c.id, titulo: c.campanha || "Campanha", marca: c.cliente };
+    return [
+      c.dia_gravacao && { ...base, _tipo: "gravar", data: c.dia_gravacao, rotulo: "Gravar: ", status: gravou(c) ? "feito" : "a fazer" },
+      c.dia_edicao && { ...base, _tipo: "editar", data: c.dia_edicao, rotulo: "Editar: ", status: editou(c) ? "feito" : "a fazer" },
+      c.prazo && { ...base, _tipo: "prazo", data: c.prazo, rotulo: "Prazo: ", status: concluida(c) ? "feito" : "a fazer" }
+    ].filter(Boolean);
+  }
+
+  /* Junta os itens do calendário com o que vem das campanhas */
   function doDia(iso) {
     const a = itens.filter((i) => String(i.data).slice(0, 10) === iso).map((i) => ({ ...i, _tipo: i.tipo || "gravar" }));
-    const b = prazos.filter((c) => String(c.prazo).slice(0, 10) === iso).map((c) => ({
-      _prazo: true, _tipo: "prazo", id: c.id, titulo: c.campanha || "Campanha", marca: c.cliente, status: (c.status === "Entregue" || c.status === "Concluído" || c.etapa === "Finalizado") ? "feito" : "a fazer"
-    }));
+    const b = prazos.flatMap(daCampanha).filter((x) => String(x.data).slice(0, 10) === iso);
     return [...a, ...b]
       .filter((x) => filtro === "todos" || x._tipo === filtro)
       .sort((x, y) => (ORDEM_TIPO[x._tipo] ?? 9) - (ORDEM_TIPO[y._tipo] ?? 9));
@@ -27,9 +44,9 @@
 
   function itemHtml(x) {
     const feito = x.status === "feito";
-    const rotulo = x._prazo ? `Prazo: ${x.titulo}` : x.titulo || "(sem título)";
-    return `<button type="button" class="cal-item t-${x._tipo}${feito ? " feito" : ""}" data-item="${x._prazo ? "p" : "c"}${x.id}" title="${P.esc(nomeTipo(x._tipo) + ": " + (x.titulo || "") + (x.marca ? " · " + x.marca : ""))}">
-      ${feito ? P.ic("check", "ic-p") : ""}<span>${P.esc(rotulo)}</span></button>`;
+    const rotulo = x._camp ? x.rotulo + x.titulo : x.titulo || "(sem título)";
+    return `<button type="button" class="cal-item t-${x._tipo}${feito ? " feito" : ""}" data-item="${x._camp ? "p" : "c"}${x.id}" title="${P.esc(rotulo + (x.marca && x.marca !== x.titulo ? " · " + x.marca : "") + (x._camp ? " (da campanha)" : ""))}">
+      ${feito ? P.ic("check", "ic-p") : x._camp ? P.ic("maleta", "ic-p") : ""}<span>${P.esc(rotulo)}</span></button>`;
   }
 
   function grade() {
@@ -57,15 +74,20 @@
 
   function atrasados() {
     const hoje = P.hoje();
-    const lista = itens.filter((i) => i.status !== "feito" && i.data && String(i.data).slice(0, 10) < hoje)
+    const daAgenda = itens.map((i) => ({ ...i, _tipo: i.tipo || "gravar" }));
+    const lista = [...daAgenda, ...prazos.flatMap(daCampanha).filter((x) => x._tipo !== "prazo")]
+      .filter((i) => i.status !== "feito" && i.data && String(i.data).slice(0, 10) < hoje)
       .sort((a, b) => String(a.data).localeCompare(String(b.data)));
     if (!lista.length) return `<div class="vazio">Nada ficou pra trás. Tudo em dia!</div>`;
     return `<div class="atrasos">${lista.map((i) => {
       const dias = -P.diasAte(i.data);
-      return `<div class="atraso"><span class="pilula t-${P.esc(i.tipo)}">${nomeTipo(i.tipo)}</span>
-        <span><b style="font-weight:500">${P.esc(i.titulo || "(sem título)")}</b>${i.marca ? ` <span class="fraco">· ${P.esc(i.marca)}</span>` : ""}${P.seloExemplo(i)}</span>
+      const botao = i._camp
+        ? `<button type="button" class="bt" style="height:28px" data-item="p${i.id}">${P.ic("maleta", "ic-p")}Abrir campanha</button>`
+        : `<button type="button" class="bt" style="height:28px" data-feito="${i.id}">${P.ic("check", "ic-p")}Feito</button>`;
+      return `<div class="atraso"><span class="pilula t-${P.esc(i._tipo)}">${nomeTipo(i._tipo)}</span>
+        <span><b style="font-weight:500">${P.esc(i.titulo || "(sem título)")}</b>${i.marca && i.marca !== i.titulo ? ` <span class="fraco">· ${P.esc(i.marca)}</span>` : ""}${i._camp ? ' <span class="pilula p-rosa">campanha</span>' : ""}${P.seloExemplo(i)}</span>
         <span class="quando">${P.dataBR(i.data)} · há ${P.plural(dias, "dia", "dias")}</span>
-        <button type="button" class="bt" style="height:28px" data-feito="${i.id}">${P.ic("check", "ic-p")}Feito</button></div>`;
+        ${botao}</div>`;
     }).join("")}</div>`;
   }
 
@@ -111,9 +133,8 @@
   function abrirItem(chave) {
     const id = Number(chave.slice(1));
     if (chave[0] === "p") {
-      const c = prazos.find((x) => x.id === id);
       P.fecharJanela();
-      P.ir("campanhas", { busca: c ? c.campanha : "" });
+      P.ir("campanhas", { abrir: id }); /* abre a ficha da campanha */
       return;
     }
     abrirForm(itens.find((x) => x.id === id));
@@ -122,10 +143,10 @@
   async function carregar() {
     const [lidos, camps] = await Promise.all([
       P.ler("calendario", (q) => q.select("*").order("data", { ascending: true })),
-      P.ler("campanhas", (q) => q.select("id,campanha,cliente,prazo,status,ativa,etapa").not("prazo", "is", null))
+      P.ler("campanhas", (q) => q.select("id,campanha,cliente,prazo,status,ativa,etapa,dia_gravacao,dia_edicao"))
     ]);
     itens = lidos || [];
-    prazos = (camps || []).filter((c) => c.ativa !== false);
+    prazos = (camps || []).filter((c) => c.prazo || c.dia_gravacao || c.dia_edicao);
     P.conferirCampos("calendario", itens, CAMPOS);
   }
 
