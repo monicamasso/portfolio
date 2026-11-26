@@ -2116,16 +2116,6 @@ const logoList = LOGOS_FAIXA.map((l) =>
 ).join("");
 $("#brandsTrack").innerHTML = `<ul>${logoList}</ul><ul aria-hidden="true">${logoList}</ul>`;
 
-/* Vídeo da capa: no computador troca pela versão 4K (27 MB); no celular e com economia de dados fica a versão leve */
-(function () {
-  const v = document.querySelector("#capaVideo video");
-  const leve = window.matchMedia("(max-width:900px)").matches || (navigator.connection && navigator.connection.saveData);
-  if (!v || leve) return;
-  /* se a versão 4K falhar, volta para a leve (o <source> do HTML) */
-  v.addEventListener("error", () => { v.removeAttribute("src"); v.load(); v.play().catch(() => {}); }, { once: true });
-  v.src = "img/capa-4k.mp4";
-  v.play().catch(() => {});
-})();
 
 /* Faixa de marcas: anda sozinha (mais rápido) e também dá pra puxar com o mouse ou o dedo */
 (function () {
