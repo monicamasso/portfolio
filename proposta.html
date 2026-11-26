@@ -568,7 +568,6 @@
   .brands li::after{content:none}
   .brands li img{display:block;box-sizing:content-box;height:40px;width:auto;max-width:130px;padding:0;background:none;border-radius:0;box-shadow:none;object-fit:contain;filter:grayscale(1);opacity:.62;transition:filter .3s,opacity .3s}
   .brands li:hover img{filter:none;opacity:1}
-  .brands li img.cor{filter:none;opacity:1}
   .brands li img.grande{height:54px}
 
   /* Botões: estilo "preto com brilho" (principal preto com estrela rosa, secundário branco com contorno fino) */
@@ -1247,11 +1246,10 @@
 
   /* ===== Manuscrita só no nome da capa e no rodapé; o resto usa Playfair Display em itálico ===== */
   .title:where(:not(#destaques-title,#trabalhos-title,#carrosseis-title,#fotos-title)) em,.note,.signature,.signature small,.hl-label,.vid-type,.metric span,#numeros .metric span,.result-brand,#numeros .result-brand,:is(#numeros,#insta) .result-brand,
-  .carousel-hint,#sobre-title .oi,.sobre-linhas .tit em,#numeros .print figcaption,.carrossel-folha .rot,.carrossel-stats > .rot,.foto figcaption,.caderno-iphone,.pacote .rot,.dif .rot,.est-titulo em,.polaroid-sign{
+  .carousel-hint,.sobre-linhas .tit em,#numeros .print figcaption,.carrossel-folha .rot,.carrossel-stats > .rot,.foto figcaption,.caderno-iphone,.pacote .rot,.dif .rot,.est-titulo em,.polaroid-sign{
     font-family:"Playfair Display",Georgia,serif!important;font-style:italic!important;font-weight:400;letter-spacing:-.065em!important;text-transform:none}
   .title:where(:not(#destaques-title,#trabalhos-title,#carrosseis-title,#fotos-title)) em{font-size:.92em!important;transform:none!important;margin:0!important;position:static!important;line-height:1.1!important}
   #servicos .title em,#numeros .title em{display:block;width:max-content;max-width:100%;margin:.04em 0 0!important}
-  #sobre-title .oi{position:static!important;display:block;transform:none!important;font-size:clamp(1.5rem,2.6vw,2.2rem)!important}
   .sobre-linhas .tit{padding-bottom:0!important}
   .sobre-linhas .tit em{position:static!important;display:block;transform:none!important;font-size:1.15rem!important;margin:2px 0 0 26px;line-height:1.1}
   #numeros .metric span,.metric span{font-size:1.25rem!important;transform:none!important;margin:6px 0 0!important;line-height:1.2}
@@ -1271,7 +1269,6 @@
   .carousel-bar{margin-bottom:22px}
   #servicos .title{max-width:none}
   #servicos .title em{display:inline-block;margin:0 0 0 .1em!important}
-  #sobre-title .oi{margin-bottom:.2em!important}
   /* ===== Nichos: título sem emoji, com a estrelinha da marca ===== */
   .grupo-titulo .spark{color:var(--pink);width:.7em;height:.7em;margin-right:8px}
 
@@ -1314,6 +1311,8 @@
   @media (max-width:900px){.capa-deco{display:none}}
   /* Contador de vídeos maior */
   .carousel-hint .hint-num{font-size:1.15em;color:var(--ink);vertical-align:baseline}
+  /* Descrição dos destaques no mesmo tamanho das descrições do Sobre */
+  #destaques .hl p{font-size:.8rem!important;font-weight:300;line-height:1.55}
 </style>
 </head>
 <body>
