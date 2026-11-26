@@ -230,6 +230,43 @@ grant insert on public.eventos to anon;
 
 
 -- ---------------------------------------------------------------------
+-- 7.3 TABELA "financeiro"
+-- Cada recebimento, igual às tabelas "Fechamento" do seu Notion.
+-- fechamento: 'futuro' (ainda vai receber), '2026-11' (mês), ou '2024'.
+-- campanha_id liga o recebimento à campanha da aba Campanhas: quando você
+-- preenche o pagamento lá, ele aparece aqui sozinho, e vice-versa.
+-- ---------------------------------------------------------------------
+create table if not exists public.financeiro (
+  id           bigint generated always as identity primary key,
+  marca        text not null default '',
+  recebido     date,
+  receber_ate  date,
+  ads_ate      date,
+  cache        numeric(12, 2) not null default 0,
+  produto      numeric(12, 2) not null default 0,
+  gasto        numeric(12, 2) not null default 0,
+  status       text not null default 'Em andamento',
+  modalidade   text not null default '',
+  pessoa       text not null default 'Mônica',
+  fechamento   text not null default 'futuro',
+  campanha_id  bigint references public.campanhas(id) on delete set null,
+  notion_url   text not null default '',
+  exemplo      boolean not null default false,
+  criado_em    timestamptz not null default now()
+);
+
+create index if not exists financeiro_campanha_idx on public.financeiro (campanha_id);
+
+alter table public.financeiro enable row level security;
+
+drop policy if exists "dona faz tudo" on public.financeiro;
+create policy "dona faz tudo" on public.financeiro
+  for all to authenticated using (public.sou_eu()) with check (public.sou_eu());
+
+grant select, insert, update, delete on public.financeiro to authenticated;
+
+
+-- ---------------------------------------------------------------------
 -- 7.2 TABELA "ajustes"
 -- Guarda as suas escolhas do painel que você mesma edita, como as
 -- colunas do quadro de campanhas (nome, cor, ordem) e a lista de status.

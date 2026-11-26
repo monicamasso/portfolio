@@ -193,8 +193,22 @@
       ],
       salvar: async (dados) => {
         dados.ativa = (ETAPAS.find((e) => e[0] === dados.etapa) || [])[2] !== "finalizada" && (ETAPAS.find((e) => e[0] === dados.etapa) || [])[2] !== "arquivada";
-        const ok = await P.gravar("campanhas", dados, x ? x.id : null);
-        if (ok) { P.toast(x ? "Campanha atualizada" : "Campanha adicionada"); await carregar(); desenhar(); }
+        let ok, id = x ? x.id : null;
+        if (x) ok = await P.gravar("campanhas", dados, x.id);
+        else {
+          /* campanha nova: guarda o número dela para ligar ao Financeiro */
+          try {
+            const { data, error } = await banco.from("campanhas").insert(dados).select("id").single();
+            if (error) throw error;
+            id = data.id; ok = true;
+          } catch (e) { P.toast(P.erroAmigavel(e, "campanhas"), true); ok = false; }
+        }
+        if (ok) {
+          P.toast(x ? "Campanha atualizada" : "Campanha adicionada");
+          /* cachê ou previsão de pagamento preenchidos: aparece sozinha no Financeiro */
+          if (P.financeiro) await P.financeiro.sincronizarCampanha({ ...(x || {}), ...dados, id });
+          await carregar(); desenhar();
+        }
         return ok;
       },
       apagar: x ? async () => { const ok = await P.apagar("campanhas", x.id, `Apagar a campanha ${x.campanha || ""}?`); if (ok) { await carregar(); desenhar(); } return ok; } : null

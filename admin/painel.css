@@ -356,3 +356,10 @@ tr.arrastando td{background:var(--pink-suave)!important}
 .editor-destinos{display:grid;gap:8px;padding:10px 12px;border-radius:10px;background:#faf7f2;font-size:13px}
 .editor-destinos label{display:grid;gap:4px}
 @media (max-width:700px){.editor-linha{grid-template-columns:auto minmax(0,1fr) auto;}.editor-amostra,.editor-conta{display:none}}
+
+/* Financeiro: rodapé de cada fechamento, igual ao Notion */
+.fin-rodape td{font-size:11.5px;color:var(--gray-claro);text-transform:lowercase;border-top:1px solid var(--line-suave);border-bottom:0;padding-top:8px}
+.fin-bloco .caixa-titulo h2{font-size:15px}
+.fin-bloco .tabela{table-layout:fixed;min-width:760px}
+.fin-bloco .tabela th:first-child{width:26%}
+.fin-bloco .tabela td:first-child{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}

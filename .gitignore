@@ -4,3 +4,4 @@ fonts/BrittanySignature.ttf
 
 # Importação do Notion: tem valores e clientes, não vai para o GitHub
 importar-notion.sql
+importar-financeiro.sql
