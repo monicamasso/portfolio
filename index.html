@@ -1330,6 +1330,16 @@
   #works .grupo.fechado{padding-bottom:20px;border-bottom:1px solid #e2e2e2}
   #works .grupo.fechado .grupo-topo{margin-bottom:0}
   #works .grupo.fechado .grupo-topo::after{content:"+";color:var(--pink)}
+  /* Avaliações nas plataformas: caixa com margem dos dois lados e barra de rolagem embaixo, igual aos vídeos (sem setas) */
+  .plat-caixa{background:#fff;border:1px solid #e2e2e2;border-radius:26px;padding:22px 22px 14px;margin-top:34px;box-shadow:0 18px 30px -26px rgba(0,0,0,.35)}
+  #numeros .plat-caixa .plat-topo .subhead{margin:0 0 16px}
+  #numeros .plat-caixa .grupo-setas{display:none}
+  #numeros .plat-caixa .plataformas{margin-right:0;padding:4px 2px 16px;scroll-padding:0;scrollbar-width:auto}
+  #numeros .plat-caixa .plataformas::-webkit-scrollbar{display:block;height:8px}
+  #numeros .plat-caixa .plataformas::-webkit-scrollbar-track{background:#ececec;border-radius:999px}
+  #numeros .plat-caixa .plataformas::-webkit-scrollbar-thumb{background:var(--pink);border-radius:999px}
+  @supports not selector(::-webkit-scrollbar){#numeros .plat-caixa .plataformas{scrollbar-width:thin;scrollbar-color:var(--pink) #ececec}}
+  @media (max-width:700px){.plat-caixa{padding:16px 14px 10px;border-radius:20px}#numeros .plat-caixa .plataforma{flex-basis:100%;width:100%}}
 </style>
 </head>
 <body>
@@ -1695,6 +1705,7 @@
       <div class="metrics" id="metrics"></div>
       <h3 class="subhead reveal">O que as marcas dizem</h3>
       <div class="prints" id="prints"></div>
+      <div class="plat-caixa">
       <div class="plat-topo">
         <h3 class="subhead reveal">Avaliações nas plataformas</h3>
         <div class="grupo-setas plat-setas" id="platSetas">
@@ -1703,6 +1714,7 @@
         </div>
       </div>
       <div class="plataformas" id="plataformas" aria-label="Avaliações de marcas nas plataformas, role para o lado"></div>
+      </div>
     </div>
   </section>
 
