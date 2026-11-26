@@ -143,6 +143,52 @@ create index if not exists visitas_data_idx on public.visitas (data);
 
 
 -- ---------------------------------------------------------------------
+-- 7.1 TABELA "eventos"
+-- O que cada visitante fez no site: em que parte da página chegou, o que
+-- clicou (Instagram, TikTok, WhatsApp, vídeos...), se mandou o formulário
+-- e quando saiu. "sessao" é um código sorteado na hora, que só serve para
+-- juntar os passos da mesma visita. Não guarda nome, IP nem nada pessoal.
+-- tipo: entrada (de onde veio), secao (parte da página que apareceu),
+--       clique, formulario, saida (onde estava ao sair)
+-- valor: segundos desde que a pessoa abriu o site
+-- ---------------------------------------------------------------------
+create table if not exists public.eventos (
+  id      bigint generated always as identity primary key,
+  data    timestamptz not null default now(),
+  sessao  text not null default '',
+  pagina  text not null default '/',
+  tipo    text not null default 'clique'
+          check (tipo in ('entrada', 'secao', 'clique', 'formulario', 'saida')),
+  alvo    text not null default '',
+  valor   integer not null default 0
+);
+
+create index if not exists eventos_data_idx on public.eventos (data);
+
+-- Tranca: só você lê. O site só consegue CRIAR eventos, nunca ler.
+alter table public.eventos enable row level security;
+
+drop policy if exists "dona faz tudo" on public.eventos;
+create policy "dona faz tudo" on public.eventos
+  for all to authenticated using (public.sou_eu()) with check (public.sou_eu());
+
+drop policy if exists "site registra evento" on public.eventos;
+create policy "site registra evento" on public.eventos
+  for insert to anon, authenticated
+  with check (
+    char_length(sessao) <= 40
+    and char_length(pagina) <= 300
+    and char_length(alvo) <= 200
+    and valor between 0 and 86400
+    and data > now() - interval '1 hour'
+    and data < now() + interval '1 hour'
+  );
+
+grant select, insert, update, delete on public.eventos to authenticated;
+grant insert on public.eventos to anon;
+
+
+-- ---------------------------------------------------------------------
 -- 8. A TRANCA (RLS, Row Level Security)
 -- Ligar o RLS faz o banco recusar TUDO por padrão. Depois, cada
 -- "policy" abre só uma porta específica. Sem policy, ninguém entra.

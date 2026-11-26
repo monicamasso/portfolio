@@ -2800,6 +2800,7 @@ function handleForm(form, success) {
     form.hidden = true;
     success.classList.add("show");
     success.focus();
+    if (window.rastrear) rastrear("formulario", "Formulário enviado");
   });
 }
 handleForm($("#contactForm"), $("#contactSuccess"));
@@ -2879,8 +2880,94 @@ async function registrarVisita() {
   } catch (e) { /* sem banco: não conta, e o site segue normal */ }
 }
 
+/* O que a pessoa fez no site (tabela "eventos"): até onde rolou, o que clicou, se mandou o formulário
+   e onde estava quando saiu. Usa um código sorteado só para juntar os passos da mesma visita:
+   nada de nome, IP ou cookie, e nenhum serviço de fora. Também não conta você logada nem o localhost. */
+const rastrear = (window.rastrear = (() => {
+  const fila = [];
+  const inicio = Date.now();
+  const noComputador = /^(localhost|127\.0\.0\.1)$/.test(location.hostname) || location.protocol === "file:";
+  let liberado = false, desligado = noComputador, sessao = "";
+  try {
+    sessao = sessionStorage.getItem("sessao") || "";
+    if (!sessao) { sessao = Math.random().toString(36).slice(2, 12) + Date.now().toString(36); sessionStorage.setItem("sessao", sessao); }
+  } catch (e) { sessao = Math.random().toString(36).slice(2, 12); }
+  const segundos = () => Math.min(86400, Math.round((Date.now() - inicio) / 1000));
+
+  function enviar() {
+    if (!liberado || desligado || !fila.length || !window.BANCO_URL) return;
+    const lote = fila.splice(0, 40);
+    fetch(window.BANCO_URL + "/rest/v1/eventos", {
+      method: "POST", keepalive: true,
+      headers: { apikey: window.BANCO_CHAVE, "Content-Type": "application/json", Prefer: "return=minimal" },
+      body: JSON.stringify(lote)
+    }).catch(() => { /* sem internet: deixa pra lá */ });
+  }
+  function rastrear(tipo, alvo, valor) {
+    if (desligado && liberado && !noComputador) return; /* no computador anota (para teste), mas nunca envia */
+    fila.push({ sessao, pagina: (location.pathname || "/").slice(0, 300), tipo, alvo: String(alvo || "").slice(0, 200), valor: valor == null ? segundos() : valor });
+    if (tipo === "clique" || tipo === "formulario") enviar();
+  }
+  rastrear.fila = fila;
+
+  /* 1. De onde veio */
+  rastrear("entrada", origemDaVisita(), 0);
+
+  /* 2. Até onde rolou: cada parte principal da página conta quando chega na parte de cima da tela */
+  let ultimaSecao = "inicio";
+  const vistas = new Set();
+  if ("IntersectionObserver" in window) {
+    const obs = new IntersectionObserver((entradas) => {
+      entradas.forEach((en) => {
+        if (!en.isIntersecting) return;
+        ultimaSecao = en.target.id;
+        if (!vistas.has(en.target.id)) { vistas.add(en.target.id); rastrear("secao", en.target.id); }
+      });
+    }, { rootMargin: "0px 0px -45% 0px" });
+    document.querySelectorAll("main > section[id]").forEach((s) => obs.observe(s));
+  }
+
+  /* 3. O que clicou */
+  function descrever(el) {
+    const a = el.closest("a[href], button, [role=button]");
+    if (!a || a.closest("#contactForm")) return "";
+    const href = a.getAttribute("href") || "";
+    const texto = (a.getAttribute("aria-label") || a.textContent || "").replace(/\s+/g, " ").trim().slice(0, 90);
+    if (a.matches(".vid")) return "Vídeo: " + texto.replace(/^Assistir vídeo\s*/i, "");
+    if (a.matches("a.hl")) return "Destaque: " + ((a.querySelector("h3") || {}).textContent || texto).trim();
+    if (a.matches(".grupo-topo")) return "Nicho: " + ((a.querySelector(".grupo-titulo") || {}).textContent || texto).replace(/\d+\s*$/, "").trim();
+    if (a.matches(".filter")) return "Filtro: " + (a.dataset.filter === "todos" ? "Todos" : a.dataset.filter);
+    if (/instagram\.com/i.test(href)) return "Instagram";
+    if (/tiktok\.com/i.test(href)) return "TikTok";
+    if (/wa\.me|whatsapp/i.test(href)) return "WhatsApp";
+    if (/^mailto:/i.test(href)) return "E-mail";
+    if (/youtu/i.test(href)) return "YouTube";
+    if (href.startsWith("#") && a.closest("#menu, .header")) return "Menu: " + texto;
+    if (href.startsWith("#")) return "Botão: " + texto;
+    if (/^https?:/i.test(href)) { try { return "Link: " + new URL(href).hostname.replace(/^www\./, ""); } catch (e) { return ""; } }
+    return "";
+  }
+  document.addEventListener("click", (e) => { const o = descrever(e.target); if (o) rastrear("clique", o); }, true);
+
+  /* 4. Quando saiu (ou trocou de aba): onde estava e quanto tempo ficou */
+  const sair = () => { rastrear("saida", ultimaSecao); enviar(); };
+  document.addEventListener("visibilitychange", () => { if (document.visibilityState === "hidden") sair(); });
+  window.addEventListener("pagehide", sair);
+  setInterval(enviar, 5000);
+
+  /* Só começa a mandar depois de conferir que não é você logada no painel */
+  rastrear.liberar = async () => {
+    if (window.banco) {
+      try { const { data } = await banco.auth.getSession(); if (data && data.session) desligado = true; } catch (e) { /* segue */ }
+    }
+    liberado = true;
+    if (desligado && !noComputador) fila.length = 0; else enviar();
+  };
+  return rastrear;
+})());
+
 /* O Supabase e o js/banco.js carregam com "defer": ficam prontos logo antes deste evento */
-window.addEventListener("DOMContentLoaded", () => { videosDoPainel(); registrarVisita(); });
+window.addEventListener("DOMContentLoaded", () => { videosDoPainel(); registrarVisita(); rastrear.liberar(); });
 
 /* Esc fecha o menu do celular */
 document.addEventListener("keydown", (e) => {

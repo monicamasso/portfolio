@@ -12,10 +12,10 @@
   let el = null;
 
   /* Lê as visitas dos últimos 14 dias, de mil em mil (o banco entrega no máximo mil por vez) */
-  async function lerVisitas(desde) {
+  async function lerVisitas(desde, tabela = "visitas", campos = "data,origem") {
     let todas = [], de = 0;
     for (;;) {
-      const lote = await P.ler("visitas", (q) => q.select("data,origem").gte("data", desde).order("data").range(de, de + 999));
+      const lote = await P.ler(tabela, (q) => q.select(campos).gte("data", desde).order("data").range(de, de + 999));
       if (lote === null) return null;
       todas = todas.concat(lote);
       if (lote.length < 1000 || todas.length >= 100000) return todas;
@@ -230,9 +230,10 @@
 
       const dias = Array.from({ length: 14 }, (_, i) => P.somarDias(P.hoje(), i - 13));
       const desde = P.paraData(dias[0]).toISOString();
-      const [lidos, visitas] = await Promise.all([
+      const [lidos, visitas, eventos] = await Promise.all([
         P.ler("videos", (q) => q.select("*").order("ordem", { ascending: true }).order("id", { ascending: true })),
-        lerVisitas(desde)
+        lerVisitas(desde),
+        lerVisitas(desde, "eventos", "data,sessao,tipo,alvo,valor")
       ]);
       videos = lidos || [];
       P._ultimasVisitas = visitas;
@@ -242,8 +243,9 @@
         <div id="numerosPortfolio">${numeros(visitas)}</div>
         <div class="duas-colunas">
           <div class="caixa"><div class="caixa-titulo"><h2>Visitas nos últimos 14 dias</h2></div>${grafico(visitas, dias)}</div>
-          <div class="caixa"><div class="caixa-titulo"><h2>Por onde chegaram</h2><span class="ajuda">14 dias</span></div>${origens(visitas)}</div>
+          <div class="caixa"><div class="caixa-titulo"><h2>De onde vieram</h2><span class="ajuda">14 dias</span></div>${origens(visitas)}</div>
         </div>
+        ${P.comportamento(eventos)}
         <div class="caixa" id="caixaVideos"></div>`;
       desenharTabela();
 
