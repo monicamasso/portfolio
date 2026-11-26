@@ -9,8 +9,8 @@
   /* As cores seguem as do Notion */
   const COR = { cinza: "p-cinza", rosa: "p-rosa", roxo: "p-roxo", amarelo: "p-amarelo", azul: "p-azul", verde: "p-verde", vermelho: "p-vermelho", laranja: "p-laranja", marrom: "p-marrom" };
   const ETAPAS = [
-    ["Organização", "cinza"], ["Negociação", "rosa"], ["Pré-Produção", "roxo"], ["Produção", "amarelo"],
-    ["Pós-Produção", "azul"], ["Aguardando Pagamento", "cinza"], ["Finalizado", "verde"]
+    ["Negociação", "rosa"], ["Pré-Produção", "roxo"], ["Produção", "amarelo"],
+    ["Pós-Produção", "azul"], ["Aguardando Pagamento", "cinza"], ["Finalizado", "verde"], ["Arquivado", "cinza"]
   ];
   /* Os status na ordem do funil do Notion (ordenar por status segue ESTA ordem) */
   const STATUS = [
@@ -31,8 +31,10 @@
   const cor = (lista, v) => COR[(lista.find((x) => x[0] === v) || [0, "cinza"])[1]];
   const pilula = (lista, v, bolinha = true) => (v ? `<span class="pilula ${bolinha ? "p-bolinha " : ""}${cor(lista, v)}">${P.esc(v)}</span>` : "");
   const pos = (lista, v) => { const i = lista.findIndex((x) => x[0] === v); return i < 0 ? 99 : i; };
-  const finalizada = (x) => x.etapa === "Finalizado" || x.ativa === false;
-  const etapaDe = (x) => x.etapa || (x.ativa === false ? "Finalizado" : "Organização");
+  /* "Arquivado" (antes "Organização"): marcas que não responderam. Ficam fora de todas as contas. */
+  const arquivada = (x) => x.etapa === "Arquivado" || x.etapa === "Organização";
+  const finalizada = (x) => !arquivada(x) && (x.etapa === "Finalizado" || x.ativa === false);
+  const etapaDe = (x) => (arquivada(x) ? "Arquivado" : x.etapa || (x.ativa === false ? "Finalizado" : "Negociação"));
 
   let camps = [], nomesMarcas = [], filtro = "todas", busca = "", visao = "quadro", ordem = { col: "prazo", dir: 1 }, el = null;
   let verTodosFinalizados = false;
@@ -52,7 +54,7 @@
   function lista() {
     const b = P.normal(busca);
     return camps
-      .filter((x) => filtro === "todas" || (filtro === "ativas" ? !finalizada(x) : finalizada(x)))
+      .filter((x) => filtro === "todas" || (filtro === "arquivadas" ? arquivada(x) : filtro === "ativas" ? !finalizada(x) && !arquivada(x) : finalizada(x)))
       .filter((x) => !b || [x.campanha, x.cliente, x.status, x.tipo, x.plataforma].some((v) => P.normal(v).includes(b)));
   }
   function ordenada() {
@@ -66,7 +68,7 @@
   }
 
   function etiquetaPrazo(x) {
-    if (!x.prazo || finalizada(x) || x.status === "Concluído") return "";
+    if (!x.prazo || finalizada(x) || arquivada(x) || x.status === "Concluído") return "";
     const d = P.diasAte(x.prazo);
     if (d < 0) return `<span class="pilula p-vermelho">atrasada ${P.plural(-d, "dia", "dias")}</span>`;
     if (d === 0) return '<span class="pilula p-amarelo">vence hoje</span>';
@@ -78,7 +80,8 @@
 
   /* ---------- Números do topo ---------- */
   function numeros() {
-    const reais = camps.filter((x) => !x.exemplo);
+    const reais = camps.filter((x) => !x.exemplo && !arquivada(x));
+    const nArquivadas = camps.filter((x) => !x.exemplo && arquivada(x)).length;
     const ativas = reais.filter((x) => !finalizada(x)).length;
     const total = reais.reduce((s, x) => s + P.num(x.valor), 0);
     const videos = reais.reduce((s, x) => s + P.num(x.qtd), 0);
@@ -86,7 +89,7 @@
     const recebido = reais.reduce((s, x) => s + P.num(x.valor) * parte(x), 0);
     const receber = reais.filter((x) => x.pagamento === "Nada pago" || x.pagamento === "50% pago").reduce((s, x) => s + P.num(x.valor) * (1 - parte(x)), 0);
     return `<div class="numeros">
-      <div class="numero"><span>Campanhas</span><strong>${reais.length}</strong></div>
+      <div class="numero"><span>Campanhas</span><strong>${reais.length}</strong>${nArquivadas ? `<small>+${P.plural(nArquivadas, "arquivada", "arquivadas")} (fora das contas)</small>` : ""}</div>
       <div class="numero"><span>Ativas</span><strong>${ativas}</strong></div>
       <div class="numero"><span>Valor total (cachês)</span><strong>${P.moeda(total)}</strong><small>ticket médio por vídeo ${P.moeda(P.divide(total, videos))}</small></div>
       <div class="numero"><span>A receber</span><strong>${P.moeda(receber)}</strong><small>já recebido ${P.moeda(recebido)}</small></div>
@@ -148,8 +151,8 @@
 
   function desenhar() {
     P.$("#numerosCamp", el).innerHTML = numeros();
-    const conta = { todas: camps.length, ativas: camps.filter((x) => !finalizada(x)).length, finalizadas: camps.filter(finalizada).length };
-    P.$("#chipsCamp", el).innerHTML = [["todas", "Todas"], ["ativas", "Ativas"], ["finalizadas", "Finalizadas"]].map(([v, t]) =>
+    const conta = { todas: camps.length, ativas: camps.filter((x) => !finalizada(x) && !arquivada(x)).length, finalizadas: camps.filter(finalizada).length, arquivadas: camps.filter(arquivada).length };
+    P.$("#chipsCamp", el).innerHTML = [["todas", "Todas"], ["ativas", "Ativas"], ["finalizadas", "Finalizadas"], ["arquivadas", "Arquivadas"]].map(([v, t]) =>
       `<button type="button" class="chip" data-filtro="${v}" aria-pressed="${filtro === v}">${t} <small>${conta[v]}</small></button>`).join("");
     P.$("#visoesCamp", el).innerHTML = [["quadro", "Quadro"], ["tabela", "Tabela"]].map(([v, t]) =>
       `<button type="button" class="sub-aba" data-visao="${v}" aria-selected="${visao === v}">${t}</button>`).join("");
@@ -158,7 +161,7 @@
   }
 
   /* ---------- Formulário ---------- */
-  function abrirForm(x = null, etapaInicial = "Organização") {
+  function abrirForm(x = null, etapaInicial = "Negociação") {
     const op = (l) => [["", "Não definido"], ...l.map(([v]) => [v, v])];
     P.formulario({
       titulo: x ? "Editar campanha" : "Adicionar campanha",
@@ -187,7 +190,7 @@
         { n: "favorita", r: "Destacar com estrela", tipo: "caixinha" }
       ],
       salvar: async (dados) => {
-        dados.ativa = dados.etapa !== "Finalizado";
+        dados.ativa = dados.etapa !== "Finalizado" && dados.etapa !== "Arquivado";
         const ok = await P.gravar("campanhas", dados, x ? x.id : null);
         if (ok) { P.toast(x ? "Campanha atualizada" : "Campanha adicionada"); await carregar(); desenhar(); }
         return ok;
@@ -202,7 +205,7 @@
   async function moverPara(id, etapa) {
     const x = camps.find((c) => c.id === id);
     if (!x || etapaDe(x) === etapa) return;
-    const dados = { etapa, ativa: etapa !== "Finalizado" };
+    const dados = { etapa, ativa: etapa !== "Finalizado" && etapa !== "Arquivado" };
     if (etapa === "Finalizado" && x.status !== "Concluído") dados.status = "Concluído";
     if (await P.gravar("campanhas", dados, id)) { Object.assign(x, dados); P.toast(`${x.campanha} foi para ${etapa}`); desenhar(); }
   }

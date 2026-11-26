@@ -90,8 +90,8 @@ create table if not exists public.calendario (
 -- ---------------------------------------------------------------------
 -- 5. TABELA "campanhas"
 -- Os seus trabalhos com marcas, organizados igual ao seu Notion "Produção":
--- etapa = a coluna do quadro (Organização, Negociação, Pré-Produção,
--- Produção, Pós-Produção, Aguardando Pagamento, Finalizado) e status = a
+-- etapa = a coluna do quadro (Negociação, Pré-Produção,
+-- Produção, Pós-Produção, Aguardando Pagamento, Finalizado, Arquivado) e status = a
 -- etiqueta do card (Aguardando Produtos, Criar Roteiro, Gravar...).
 -- "valor" é o cachê, "qtd" é quantos vídeos.
 -- ---------------------------------------------------------------------
@@ -139,7 +139,7 @@ alter table public.campanhas alter column pagamento set default '';
 -- Traduz o que estava no formato antigo para o formato do Notion
 update public.campanhas set pagamento = 'Nada pago' where pagamento = 'pendente';
 update public.campanhas set pagamento = 'Pago' where pagamento = 'pago';
-update public.campanhas set status = 'Aguardando Produtos', etapa = 'Organização' where status = 'Briefing';
+update public.campanhas set status = 'Aguardando Produtos', etapa = 'Negociação' where status = 'Briefing';
 update public.campanhas set status = 'Criar Roteiro', etapa = 'Pré-Produção' where status = 'Roteiro';
 update public.campanhas set status = 'Aguardando Apv. Roteiro', etapa = 'Pré-Produção' where status = 'Aprovação Roteiro';
 update public.campanhas set status = 'Gravar', etapa = 'Produção' where status = 'Gravação';
@@ -147,6 +147,11 @@ update public.campanhas set status = 'Editar', etapa = 'Pós-Produção' where s
 update public.campanhas set status = 'Postar', etapa = 'Pós-Produção' where status = 'Aprovado';
 update public.campanhas set status = 'Concluído', etapa = 'Finalizado' where status = 'Entregue';
 update public.campanhas set tipo = 'UGC' where tipo in ('Conteúdo', 'Publicidade');
+
+-- 5.2 "Organização" virou "Arquivado": marcas que não responderam.
+-- Campanhas arquivadas ficam fora das contas e do calendário.
+alter table public.campanhas alter column etapa set default 'Negociação';
+update public.campanhas set etapa = 'Arquivado', ativa = false where etapa = 'Organização';
 
 
 -- ---------------------------------------------------------------------
@@ -334,7 +339,7 @@ select 'Exemplo: apague esta linha', 'Marca Exemplo', 'gravar', current_date + 2
 where not exists (select 1 from public.calendario);
 
 insert into public.campanhas (campanha, cliente, tipo, status, etapa, qtd, valor, prazo, pagamento, ativa, favorita, exemplo)
-select 'Exemplo: apague esta linha', 'Marca Exemplo', 'UGC', 'Aguardando Produtos', 'Organização', 1, 0, current_date + 7, 'Nada pago', true, false, true
+select 'Exemplo: apague esta linha', 'Marca Exemplo', 'UGC', 'Aguardando Produtos', 'Negociação', 1, 0, current_date + 7, 'Nada pago', true, false, true
 where not exists (select 1 from public.campanhas);
 
 

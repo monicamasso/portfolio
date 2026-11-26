@@ -16,9 +16,9 @@
 
   /* Campanhas: a gravação conta como feita quando a campanha chega na Pós-Produção,
      a edição quando chega em aprovação, postagem ou depois, e o prazo quando foi concluída */
-  const ETAPAS = ["Organização", "Negociação", "Pré-Produção", "Produção", "Pós-Produção", "Aguardando Pagamento", "Finalizado"];
+  const ETAPAS = ["Arquivado", "Negociação", "Pré-Produção", "Produção", "Pós-Produção", "Aguardando Pagamento", "Finalizado"];
   const DEPOIS_DA_EDICAO = ["Enviar para Aprovação", "Aguardando Aprovação", "Postar", "Aguardando Pagamento", "Emitir NF", "Concluído", "Entregue"];
-  const etapaPos = (c) => ETAPAS.indexOf(c.etapa || (c.ativa === false ? "Finalizado" : "Organização"));
+  const etapaPos = (c) => ETAPAS.indexOf(c.etapa || (c.ativa === false ? "Finalizado" : "Negociação"));
   const concluida = (c) => c.status === "Entregue" || c.status === "Concluído" || c.etapa === "Finalizado" || c.ativa === false;
   const gravou = (c) => concluida(c) || etapaPos(c) >= ETAPAS.indexOf("Pós-Produção");
   const editou = (c) => concluida(c) || etapaPos(c) >= ETAPAS.indexOf("Aguardando Pagamento") || DEPOIS_DA_EDICAO.includes(c.status);
@@ -146,7 +146,8 @@
       P.ler("campanhas", (q) => q.select("id,campanha,cliente,prazo,status,ativa,etapa,dia_gravacao,dia_edicao"))
     ]);
     itens = lidos || [];
-    prazos = (camps || []).filter((c) => c.prazo || c.dia_gravacao || c.dia_edicao);
+    /* Campanhas arquivadas (marcas que não responderam) não aparecem no calendário */
+    prazos = (camps || []).filter((c) => (c.prazo || c.dia_gravacao || c.dia_edicao) && c.etapa !== "Arquivado" && c.etapa !== "Organização");
     P.conferirCampos("calendario", itens, CAMPOS);
   }
 
