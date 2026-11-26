@@ -338,3 +338,8 @@ tr.arrastando td{background:var(--pink-suave)!important}
 .coluna-mais,.coluna-nova{display:flex;align-items:center;gap:6px;border:0;background:none;border-radius:8px;padding:6px 8px;font-size:12.5px;color:var(--gray);cursor:pointer;text-align:left}
 .coluna-mais:hover,.coluna-nova:hover{background:rgba(0,0,0,.05);color:var(--ink)}
 @media (max-width:900px){.coluna{flex-basis:78vw}}
+
+/* Botão "Desfazer" dentro do aviso do pé da tela */
+.toast{display:flex;align-items:center;gap:12px}
+.toast-acao{border:0;background:rgba(255,255,255,.16);color:#fff;font:inherit;font-weight:600;padding:4px 12px;border-radius:999px;cursor:pointer}
+.toast-acao:hover{background:var(--pink)}

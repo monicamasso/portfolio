@@ -111,12 +111,63 @@ P.baixarCSV = (arquivo, cabecalho, linhas) => {
 };
 
 /* Aviso rápido no pé da tela */
-P.toast = (texto, erro = false) => {
+P.toast = (texto, erro = false, acao = null) => {
   P.$$(".toast").forEach((t) => t.remove());
-  const t = Object.assign(document.createElement("div"), { className: "toast" + (erro ? " erro" : ""), textContent: texto });
+  const t = Object.assign(document.createElement("div"), { className: "toast" + (erro ? " erro" : "") });
+  t.appendChild(document.createTextNode(texto));
   t.setAttribute("role", "status");
+  if (acao) {
+    const b = Object.assign(document.createElement("button"), { type: "button", className: "toast-acao", textContent: acao.texto });
+    b.addEventListener("click", () => { t.remove(); acao.fn(); });
+    t.appendChild(b);
+  }
   document.body.appendChild(t);
-  setTimeout(() => t.remove(), erro ? 6000 : 2600);
+  setTimeout(() => t.remove(), acao ? 15000 : erro ? 6000 : 2600);
+};
+
+/* ---------- APAGADOS RECENTEMENTE (para desfazer) ----------
+   Antes de apagar, o painel guarda uma cópia neste navegador (as últimas 30).
+   "Desfazer" e "Restaurar" colocam a cópia de volta no banco. */
+const CHAVE_LIXEIRA = "painel-apagados";
+const NOMES_TABELA = { campanhas: "Campanha", marcas: "Marca", videos: "Vídeo", calendario: "Calendário" };
+P.lixeira = () => { try { return JSON.parse(localStorage.getItem(CHAVE_LIXEIRA) || "[]"); } catch (e) { return []; } };
+const salvarLixeira = (l) => { try { localStorage.setItem(CHAVE_LIXEIRA, JSON.stringify(l.slice(0, 30))); } catch (e) { /* cheio: segue sem guardar */ } };
+const nomeDaLinha = (l) => l.campanha || l.nome || l.titulo || l.marca || "(sem nome)";
+
+P.restaurar = async (chave) => {
+  const lista = P.lixeira();
+  const item = lista.find((x) => x.chave === chave);
+  if (!item) return false;
+  const { id, ...resto } = item.linha; /* o banco dá um número novo; todo o resto volta igual */
+  const ok = await P.gravar(item.tabela, resto);
+  if (ok) {
+    salvarLixeira(lista.filter((x) => x.chave !== chave));
+    P.toast(`${nomeDaLinha(item.linha)} voltou`);
+    if (P.atual) P.ir(P.atual);
+  }
+  return ok;
+};
+
+P.abrirLixeira = () => {
+  const lista = P.lixeira();
+  const quando = (t) => { const d = new Date(t); return `${P.dataBR(P.iso(d))} ${String(d.getHours()).padStart(2, "0")}:${String(d.getMinutes()).padStart(2, "0")}`; };
+  const f = P.janela({
+    titulo: "Apagados recentemente",
+    corpo: lista.length
+      ? `<p class="ajuda" style="margin:0">As últimas 30 coisas que você apagou neste navegador. Clique em Restaurar para trazer de volta.</p>
+         <div class="atrasos">${lista.map((x) => `<div class="atraso">
+           <span class="pilula">${P.esc(NOMES_TABELA[x.tabela] || x.tabela)}</span>
+           <span><b style="font-weight:500">${P.esc(nomeDaLinha(x.linha))}</b></span>
+           <span class="fraco" style="margin-left:auto;font-size:12px;white-space:nowrap">${quando(x.quando)}</span>
+           <button type="button" class="bt" style="height:28px" data-restaurar="${P.esc(x.chave)}">Restaurar</button></div>`).join("")}</div>`
+      : `<div class="vazio">Nada apagado por aqui. Quando você apagar uma campanha, marca, vídeo ou item do calendário, ele fica guardado aqui para você poder trazer de volta.</div>`
+  });
+  f.addEventListener("click", async (e) => {
+    const b = e.target.closest("[data-restaurar]");
+    if (!b) return;
+    b.disabled = true;
+    if (await P.restaurar(b.dataset.restaurar)) P.fecharJanela(); else b.disabled = false;
+  });
 };
 
 /* Faixa de aviso fixa no topo (problemas no banco). Mesma chave não repete. */
@@ -202,12 +253,20 @@ P.gravar = async (tabela, dados, id = null, campoId = "id") => {
     return false;
   }
 };
-P.apagar = async (tabela, id, pergunta = "Apagar este item? Não dá para desfazer.") => {
+P.apagar = async (tabela, id, pergunta = "Apagar este item?") => {
   if (!confirm(pergunta)) return false;
   try {
+    /* 1. guarda uma cópia, 2. apaga, 3. oferece Desfazer */
+    const { data: copia } = await banco.from(tabela).select("*").eq("id", id).maybeSingle();
     const { error } = await banco.from(tabela).delete().eq("id", id);
     if (error) throw error;
-    P.toast("Apagado");
+    if (copia) {
+      const chave = `${tabela}-${id}-${Date.now()}`;
+      salvarLixeira([{ chave, tabela, linha: copia, quando: Date.now() }, ...P.lixeira()]);
+      P.toast(`${nomeDaLinha(copia)} apagado`, false, { texto: "Desfazer", fn: () => P.restaurar(chave) });
+    } else {
+      P.toast("Apagado");
+    }
     return true;
   } catch (e) {
     P.toast(P.erroAmigavel(e, tabela), true);
@@ -327,6 +386,7 @@ P.ir = async (nome, opcoes = {}) => {
   }
 
   P.$("#meuEmail").textContent = r.sessao.user.email || "";
+  P.$("#btApagados").addEventListener("click", () => { document.body.classList.remove("menu-aberto"); P.abrirLixeira(); });
   P.$("#btSair").addEventListener("click", async () => {
     try { await banco.auth.signOut(); } catch (e) { /* sai mesmo assim */ }
     location.replace("../login/");
