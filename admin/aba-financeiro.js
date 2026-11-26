@@ -112,7 +112,7 @@
       <div class="tabela-rolagem"><table class="tabela">
         <thead><tr><th>Marca</th><th>Recebido</th><th>Receber até</th>${extras ? "<th>ADS até</th>" : ""}<th class="num">Cachê</th><th class="num">Produto</th>${extras ? '<th class="num">Gasto</th>' : ""}<th>Status</th><th>Modalidade</th></tr></thead>
         <tbody>${ordenadas.map((x) => `<tr class="clicavel" data-id="${x.id}">
-          <td><b style="font-weight:500">${P.esc(x.marca || "(sem nome)")}</b>${x.campanha_id ? ` <span class="fraco" title="Ligado a uma campanha">${P.ic("maleta", "ic-p")}</span>` : ""}${P.seloExemplo(x)}</td>
+          <td><b style="font-weight:500">${P.esc(x.marca || "(sem nome)")}</b>${x.pessoa === "Casal" ? ' <span class="pilula p-verde" title="Recebimento do casal: aqui está só a sua metade">casal</span>' : ""}${x.campanha_id ? ` <span class="fraco" title="Ligado a uma campanha">${P.ic("maleta", "ic-p")}</span>` : ""}${P.seloExemplo(x)}</td>
           <td class="fraco" style="white-space:nowrap">${P.dataBR(x.recebido)}</td>
           <td class="fraco" style="white-space:nowrap">${P.dataBR(x.receber_ate)}${etiquetaAtraso(x)}</td>
           ${extras ? `<td class="fraco">${P.dataBR(x.ads_ate)}</td>` : ""}
@@ -203,7 +203,8 @@
       P.ler("financeiro", (q) => q.select("*")),
       P.ler("campanhas", (q) => q.select("id,campanha,emoji,criado_em").order("criado_em", { ascending: false }))
     ]);
-    itens = (lidos || []).filter((x) => !x.pessoa || x.pessoa === "Mônica");
+    /* seus recebimentos e os de casal (que entram com a sua metade) */
+    itens = (lidos || []).filter((x) => !x.pessoa || x.pessoa === "Mônica" || x.pessoa === "Casal");
     camps = cs || [];
     P.conferirCampos("financeiro", itens, CAMPOS);
   }
