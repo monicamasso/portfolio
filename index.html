@@ -1323,6 +1323,13 @@
   #works .grupo-fila{scrollbar-width:auto}
   @supports not selector(::-webkit-scrollbar){#works .grupo-fila{scrollbar-width:thin;scrollbar-color:var(--pink) #ececec}}
   @media (max-width:700px){#works .grupo{padding:16px 14px 10px;border-radius:20px;margin-bottom:16px}#works .grupo-fila .vid{flex-basis:40vw}}
+  /* Nichos: sem setas (rola pela barra ou arrastando) e clicar no nome fecha ou abre a caixa */
+  #works .grupo-setas{display:none}
+  #works .grupo-topo{cursor:pointer;justify-content:space-between;min-height:34px}
+  #works .grupo-topo::after{content:"−";font-size:1.5rem;line-height:1;color:var(--gray)}
+  #works .grupo.fechado{padding-bottom:20px;border-bottom:1px solid #e2e2e2}
+  #works .grupo.fechado .grupo-topo{margin-bottom:0}
+  #works .grupo.fechado .grupo-topo::after{content:"+";color:var(--pink)}
 </style>
 </head>
 <body>
@@ -2414,7 +2421,7 @@ function filtrar(nome) {
   const recolher = nome === "todos";
   worksEl.innerHTML = blocos.map(({ g, videos }, gi) => `
     <section class="grupo" aria-label="${esc(g.nome)}">
-      <div class="grupo-topo">
+      <div class="grupo-topo" role="button" tabindex="0" aria-expanded="true" title="Clique para fechar ou abrir">
         <h3 class="grupo-titulo"><span class="spark" aria-hidden="true"></span>${esc(g.nome)} <small>${videos.length}</small></h3>
         <div class="grupo-setas">
           <button type="button" class="carousel-arrow" data-dir="-1" aria-label="Vídeos anteriores de ${esc(g.nome)}">‹</button>
@@ -2426,7 +2433,7 @@ function filtrar(nome) {
   $("#worksCount").innerHTML = nome === "nenhum"
     ? `<b class="hint-num">${VIDEOS.length} vídeos</b> · toque em um nicho pra ver`
     : recolher
-    ? `<b class="hint-num">${lista.length} vídeos</b> · arrasta cada fileira pro lado →`
+    ? `<b class="hint-num">${lista.length} vídeos</b> · arrasta cada fileira pro lado · clique no nome do nicho pra fechar`
     : `<b class="hint-num">${lista.length} vídeos</b> · arrasta pro lado pra ver todos →`;
   atualizarSetas();
 }
