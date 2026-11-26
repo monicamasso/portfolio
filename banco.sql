@@ -230,6 +230,26 @@ grant insert on public.eventos to anon;
 
 
 -- ---------------------------------------------------------------------
+-- 7.2 TABELA "ajustes"
+-- Guarda as suas escolhas do painel que você mesma edita, como as
+-- colunas do quadro de campanhas (nome, cor, ordem) e a lista de status.
+-- ---------------------------------------------------------------------
+create table if not exists public.ajustes (
+  chave          text primary key,
+  valor          jsonb not null default '[]'::jsonb,
+  atualizado_em  timestamptz not null default now()
+);
+
+alter table public.ajustes enable row level security;
+
+drop policy if exists "dona faz tudo" on public.ajustes;
+create policy "dona faz tudo" on public.ajustes
+  for all to authenticated using (public.sou_eu()) with check (public.sou_eu());
+
+grant select, insert, update, delete on public.ajustes to authenticated;
+
+
+-- ---------------------------------------------------------------------
 -- 8. A TRANCA (RLS, Row Level Security)
 -- Ligar o RLS faz o banco recusar TUDO por padrão. Depois, cada
 -- "policy" abre só uma porta específica. Sem policy, ninguém entra.

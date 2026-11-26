@@ -8,19 +8,13 @@
 
   /* As cores seguem as do Notion */
   const COR = { cinza: "p-cinza", rosa: "p-rosa", roxo: "p-roxo", amarelo: "p-amarelo", azul: "p-azul", verde: "p-verde", vermelho: "p-vermelho", laranja: "p-laranja", marrom: "p-marrom" };
-  const ETAPAS = [
-    ["Negociação", "rosa"], ["Pré-Produção", "roxo"], ["Produção", "amarelo"],
-    ["Pós-Produção", "azul"], ["Aguardando Pagamento", "cinza"], ["Finalizado", "verde"], ["Arquivado", "cinza"]
-  ];
-  /* Os status na ordem do funil do Notion (ordenar por status segue ESTA ordem) */
-  const STATUS = [
-    ["Campanha Pausada", "cinza"], ["Sem Retorno da Marca", "cinza"], ["Em Negociação", "cinza"], ["Aguardando Produtos", "cinza"],
-    ["Enviar Contrato", "cinza"], ["Aguardando Contrato", "cinza"], ["Regravar", "azul"], ["Criar Roteiro", "amarelo"],
-    ["Roteiro Criado", "laranja"], ["Roteiro Enviado", "laranja"], ["Aguardando Apv. Roteiro", "laranja"], ["Gravar", "azul"],
-    ["Narrar", "roxo"], ["Editar", "roxo"], ["Enviar para Edição", "roxo"], ["Aguardando Edição", "roxo"],
-    ["Enviar para Aprovação", "rosa"], ["Aguardando Aprovação", "rosa"], ["Postar", "rosa"], ["Aguardando Pagamento", "vermelho"],
-    ["Emitir NF", "vermelho"], ["Concluído", "verde"]
-  ];
+  /* Colunas do quadro e status: você edita no painel ("Editar colunas" e "Editar status").
+     Cada item: [nome, cor, tipo]. A ordem dos status é a ordem usada para ordenar a tabela. */
+  let ETAPAS = [], STATUS = [];
+  const aplicarAjustes = () => {
+    ETAPAS = P.ajustes.pegar("campanhas.etapas").map((x) => [x.nome, x.cor, x.tipo || "andamento"]);
+    STATUS = P.ajustes.pegar("campanhas.status").map((x) => [x.nome, x.cor]);
+  };
   const TIPOS = [["Reels Collab", "amarelo"], ["Reels sem Collab", "roxo"], ["UGC", "rosa"], ["Tiktok", "azul"], ["Tiktok Shop", "marrom"]];
   const PAGAMENTOS = [["Nada pago", "marrom"], ["50% pago", "amarelo"], ["Pago", "verde"]];
   const NOTAS = [["Emitida", "verde"], ["Emitir", "amarelo"], ["Não é necessário", "marrom"]];
@@ -32,9 +26,17 @@
   const pilula = (lista, v, bolinha = true) => (v ? `<span class="pilula ${bolinha ? "p-bolinha " : ""}${cor(lista, v)}">${P.esc(v)}</span>` : "");
   const pos = (lista, v) => { const i = lista.findIndex((x) => x[0] === v); return i < 0 ? 99 : i; };
   /* "Arquivado" (antes "Organização"): marcas que não responderam. Ficam fora de todas as contas. */
-  const arquivada = (x) => x.etapa === "Arquivado" || x.etapa === "Organização";
-  const finalizada = (x) => !arquivada(x) && (x.etapa === "Finalizado" || x.ativa === false);
-  const etapaDe = (x) => (arquivada(x) ? "Arquivado" : x.etapa || (x.ativa === false ? "Finalizado" : "Negociação"));
+  const primeiraDoTipo = (t) => (ETAPAS.find((e) => e[2] === t) || [])[0];
+  /* Em qual coluna o card fica: a dele; se a coluna não existe mais, vai para uma que faça sentido */
+  const etapaDe = (x) => {
+    if (ETAPAS.some((e) => e[0] === x.etapa)) return x.etapa;
+    if (x.etapa === "Organização" || x.etapa === "Arquivado") return primeiraDoTipo("arquivada") || ETAPAS[0][0];
+    if (x.ativa === false) return primeiraDoTipo("finalizada") || ETAPAS[ETAPAS.length - 1][0];
+    return ETAPAS[0][0];
+  };
+  const tipoDe = (x) => (ETAPAS.find((e) => e[0] === etapaDe(x)) || [])[2] || "andamento";
+  const arquivada = (x) => tipoDe(x) === "arquivada";
+  const finalizada = (x) => tipoDe(x) === "finalizada";
 
   let camps = [], nomesMarcas = [], filtro = "todas", busca = "", visao = "quadro", ordem = { col: "prazo", dir: 1 }, el = null;
   let verTodosFinalizados = false;
@@ -113,11 +115,11 @@
   }
   function quadro() {
     const l = lista();
-    const colunas = ETAPAS.filter(([e]) => e !== "Aguardando Pagamento" || l.some((x) => etapaDe(x) === e));
+    const colunas = ETAPAS;
     return `<div class="quadro">${colunas.map(([e, c]) => {
       let itens = l.filter((x) => etapaDe(x) === e).sort((a, z) => (z.favorita - a.favorita) || String(z.criado_em || "").localeCompare(String(a.criado_em || "")));
       const total = itens.length;
-      const corta = e === "Finalizado" && !verTodosFinalizados && total > 12;
+      const corta = e === primeiraDoTipo("finalizada") && !verTodosFinalizados && total > 12;
       if (corta) itens = itens.slice(0, 12);
       return `<section class="coluna col-${c}" data-etapa="${P.esc(e)}">
         <div class="coluna-topo"><span class="pilula ${COR[c]}">${P.esc(e)}</span><small>${total}</small></div>
@@ -161,11 +163,11 @@
   }
 
   /* ---------- Formulário ---------- */
-  function abrirForm(x = null, etapaInicial = "Negociação") {
+  function abrirForm(x = null, etapaInicial = null) {
     const op = (l) => [["", "Não definido"], ...l.map(([v]) => [v, v])];
     P.formulario({
       titulo: x ? "Editar campanha" : "Adicionar campanha",
-      valores: x ? { ...x, etapa: etapaDe(x) } : { etapa: etapaInicial, status: "Aguardando Produtos", qtd: 1, pagamento: "Nada pago", favorita: false },
+      valores: x ? { ...x, etapa: etapaDe(x) } : { etapa: etapaInicial || ETAPAS[0][0], status: "Aguardando Produtos", qtd: 1, pagamento: "Nada pago", favorita: false },
       campos: [
         { n: "campanha", r: "Campanha / marca", obrig: true },
         { n: "emoji", r: "Emoji do card", meia: true, ajuda: "Opcional. Ex: 📱" },
@@ -190,7 +192,7 @@
         { n: "favorita", r: "Destacar com estrela", tipo: "caixinha" }
       ],
       salvar: async (dados) => {
-        dados.ativa = dados.etapa !== "Finalizado" && dados.etapa !== "Arquivado";
+        dados.ativa = (ETAPAS.find((e) => e[0] === dados.etapa) || [])[2] !== "finalizada" && (ETAPAS.find((e) => e[0] === dados.etapa) || [])[2] !== "arquivada";
         const ok = await P.gravar("campanhas", dados, x ? x.id : null);
         if (ok) { P.toast(x ? "Campanha atualizada" : "Campanha adicionada"); await carregar(); desenhar(); }
         return ok;
@@ -205,8 +207,9 @@
   async function moverPara(id, etapa) {
     const x = camps.find((c) => c.id === id);
     if (!x || etapaDe(x) === etapa) return;
-    const dados = { etapa, ativa: etapa !== "Finalizado" && etapa !== "Arquivado" };
-    if (etapa === "Finalizado" && x.status !== "Concluído") dados.status = "Concluído";
+    const tipo = (ETAPAS.find((c) => c[0] === etapa) || [])[2] || "andamento";
+    const dados = { etapa, ativa: tipo === "andamento" };
+    if (tipo === "finalizada" && x.status !== "Concluído" && STATUS.some((s) => s[0] === "Concluído")) dados.status = "Concluído";
     if (await P.gravar("campanhas", dados, id)) { Object.assign(x, dados); P.toast(`${x.campanha} foi para ${etapa}`); desenhar(); }
   }
 
@@ -236,6 +239,8 @@
       if (opcoes.busca) filtro = "todas";
       P.acoes(`<button type="button" class="bt bt-rosa" id="btNovaCamp">${P.ic("mais", "ic-p")}Adicionar campanha</button>`);
       P.$("#btNovaCamp").addEventListener("click", () => abrirForm());
+      await Promise.all([P.ajustes.carregar("campanhas.etapas"), P.ajustes.carregar("campanhas.status")]);
+      aplicarAjustes();
       await carregar();
       P.ler("marcas", (q) => q.select("nome")).then((m) => { nomesMarcas = [...new Set((m || []).map((x) => x.nome).filter(Boolean))].sort(); });
 
@@ -245,7 +250,7 @@
             <div class="sub-abas" role="tablist" id="visoesCamp"></div>
             <div class="chips" id="chipsCamp"></div>
             <label class="busca">${P.ic("busca", "ic-p")}<input class="entrada" type="search" id="buscaCamp" placeholder="Buscar campanha, status, tipo" aria-label="Buscar campanhas"></label>
-            <div class="direita"><button type="button" class="bt" id="btBaixarCamp">${P.ic("baixar", "ic-p")}Baixar CSV</button></div>
+            <div class="direita"><button type="button" class="bt" data-editar-lista="campanhas.etapas">Editar colunas</button><button type="button" class="bt" data-editar-lista="campanhas.status">Editar status</button><button type="button" class="bt" id="btBaixarCamp">${P.ic("baixar", "ic-p")}Baixar CSV</button></div>
           </div>
           <div id="conteudoCamp"></div>
         </div>`;
@@ -259,6 +264,24 @@
       el.addEventListener("click", async (e) => {
         const v = e.target.closest("[data-visao]");
         if (v) { visao = v.dataset.visao; try { localStorage.setItem("painel-campanhas-visao", visao); } catch (er) { /* ok */ } return desenhar(); }
+        const ed = e.target.closest("[data-editar-lista]");
+        if (ed) {
+          const chave = ed.dataset.editarLista, ehColuna = chave === "campanhas.etapas", campo = ehColuna ? "etapa" : "status";
+          return P.ajustes.editar({
+            titulo: ehColuna ? "Editar colunas do quadro" : "Editar status", chave, comTipo: ehColuna, campo,
+            contar: (nome) => camps.filter((x) => (ehColuna ? etapaDe(x) : x.status) === nome).length,
+            aoSalvar: async ({ renomeados, apagados }) => {
+              /* as campanhas acompanham: nome novo e destino das apagadas */
+              for (const [antigo, novo] of [...renomeados, ...apagados]) {
+                if (!(await P.gravar("campanhas", { [campo]: novo }, antigo, campo))) return false;
+              }
+              aplicarAjustes();
+              await carregar();
+              desenhar();
+              return true;
+            }
+          });
+        }
         const ch = e.target.closest("[data-filtro]");
         if (ch) { filtro = ch.dataset.filtro; return desenhar(); }
         if (e.target.closest("[data-ver-todos]")) { verTodosFinalizados = true; return desenhar(); }
