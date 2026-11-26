@@ -16,7 +16,7 @@
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%23E0218F' d='M12 0C12.9 6.9 17.1 11.1 24 12C17.1 12.9 12.9 17.1 12 24C11.1 17.1 6.9 12.9 0 12C6.9 11.1 11.1 6.9 12 0Z'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Anton&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Playfair+Display:ital,wght@1,400;1,600&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
   @font-face{font-family:"Astagina Signature";src:url("fonts/AstaginaSignature.otf") format("opentype");font-display:swap}
 
@@ -1236,6 +1236,68 @@
     .hero.hero-foto .hero-phrase{font-size:.95rem;margin-top:12px}
     .hero.hero-foto .hero-btns{margin-top:18px}
   }
+  /* ===== Ajustes de 26/11: menos espaço entre seções ===== */
+  section{padding:58px 0}
+  #destaques{padding:24px 0 52px}
+  .head{margin-bottom:32px}
+  .area{margin-top:56px}
+  .area-ugc{margin-top:28px}
+  @media (max-width:900px){section{padding:42px 0}#destaques{padding:18px 0 40px}.head{margin-bottom:24px}.area{margin-top:44px}}
+
+  /* ===== Manuscrita só no nome da capa e no rodapé; o resto usa Playfair Display em itálico ===== */
+  .title em,.note,.signature,.signature small,.hl-label,.vid-type,.metric span,#numeros .metric span,.result-brand,#numeros .result-brand,:is(#numeros,#insta) .result-brand,
+  .carousel-hint,#sobre-title .oi,.sobre-linhas .tit em,#numeros .print figcaption,.carrossel-folha .rot,.carrossel-stats > .rot,.foto figcaption,.caderno-iphone,.pacote .rot,.dif .rot,.est-titulo em,.polaroid-sign{
+    font-family:"Playfair Display",Georgia,serif!important;font-style:italic!important;font-weight:400;letter-spacing:-.04em!important;text-transform:none}
+  .title em{font-size:.92em!important;transform:none!important;margin:0!important;position:static!important;line-height:1.1!important}
+  #servicos .title em,#numeros .title em{display:block;width:max-content;max-width:100%;margin:.04em 0 0!important}
+  #sobre-title .oi{position:static!important;display:block;transform:none!important;font-size:clamp(1.5rem,2.6vw,2.2rem)!important}
+  .sobre-linhas .tit{padding-bottom:0!important}
+  .sobre-linhas .tit em{position:static!important;display:block;transform:none!important;font-size:1.15rem!important;margin:2px 0 0 26px;line-height:1.1}
+  #numeros .metric span,.metric span{font-size:1.25rem!important;transform:none!important;margin:6px 0 0!important;line-height:1.2}
+  #numeros .result-brand,:is(#numeros,#insta) .result-brand{font-size:1.7rem!important;white-space:normal;line-height:1.15}
+  .vid-type,#trabalhos .vid-type{font-size:1.05rem!important;line-height:1.25!important}
+  #ttPainel .vid-type{font-family:"Anton",Impact,sans-serif!important;font-style:normal!important;letter-spacing:.02em!important;font-size:1.5rem!important}
+  .carrossel-folha .rot{font-size:1.6rem!important;line-height:1.15!important}
+  .carrossel-stats > .rot{font-size:1.15rem!important;transform:none!important;margin:2px 0 14px!important}
+  .foto figcaption{font-size:1.25rem!important;line-height:1.3!important}
+  #numeros .print figcaption{font-size:1.3rem!important}
+  .pacote .rot{font-size:2.3rem!important}
+  .dif .rot{font-size:1.7rem!important}
+  #destaques .hl-label,.hl-label{font-size:1.25rem!important;margin:4px 0 0!important;padding-left:0!important;transform:none!important}
+  #destaques .title em{display:block;width:max-content;max-width:100%}
+  .carousel-hint{font-size:1.3rem!important}
+  .caderno-iphone{font-size:clamp(.8rem,1.2vw,1.1rem)!important}
+
+  .carousel-bar{margin-bottom:22px}
+  #servicos .title{max-width:none}
+  #servicos .title em{display:inline-block;margin:0 0 0 .1em!important}
+  #sobre-title .oi{margin-bottom:.2em!important}
+  /* ===== Nichos: título sem emoji, com a estrelinha da marca ===== */
+  .grupo-titulo .spark{color:var(--pink);width:.7em;height:.7em;margin-right:8px}
+
+  /* ===== Comparação UGC x Influência x TikTok Shop ===== */
+  .formatos{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:22px}
+  .formato{background:#fff;border-radius:28px;padding:28px 26px 30px;box-shadow:0 22px 34px -24px rgba(0,0,0,.4);border-top:8px solid var(--pink)}
+  .formato.f-influ{border-top-color:#fff;box-shadow:inset 0 0 0 3px var(--pink),0 22px 34px -24px rgba(0,0,0,.4)}
+  .formato.f-tt{background:var(--ink);color:#f7efe2;border-top-color:var(--ink)}
+  .f-num{margin:0;font-family:"Anton",Impact,sans-serif;font-size:1.1rem;color:var(--pink);letter-spacing:.06em}
+  .formato h3{margin:4px 0 10px;font-family:"Anton",Impact,sans-serif;font-weight:400;text-transform:uppercase;font-size:clamp(1.8rem,3vw,2.5rem);line-height:1}
+  .f-resumo{margin:0 0 18px;font-size:.95rem;line-height:1.5}
+  .formato dl{margin:0}
+  .formato dt{margin-top:14px;padding-top:12px;border-top:1px solid rgba(127,127,127,.28);font-size:.7rem;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--pink)}
+  .formato dd{margin:4px 0 0;font-size:.86rem;line-height:1.5;color:var(--gray)}
+  .formato.f-tt dd{color:#cfc8bc}
+  @media (max-width:900px){.formatos{grid-template-columns:1fr}}
+
+  /* ===== TikTok Shop: 6 números e pílula de visualizações em cima de cada vídeo ===== */
+  #ttNum{grid-template-columns:repeat(6,minmax(0,1fr))}
+  #ttNum strong{font-size:clamp(1.5rem,2.2vw,2.1rem)}
+  @media (max-width:1000px){#ttNum{grid-template-columns:repeat(3,minmax(0,1fr))}}
+  @media (max-width:700px){#ttNum{grid-template-columns:repeat(2,minmax(0,1fr))}#ttNum > div.destaque:last-child{grid-column:auto}}
+  .tt-item{position:relative}
+  .tt-views{position:absolute;z-index:3;top:12px;left:50%;transform:translateX(-50%);display:inline-flex;align-items:center;gap:6px;white-space:nowrap;background:var(--pink);color:#fff;border-radius:999px;padding:7px 14px;font-size:.8rem;box-shadow:0 8px 18px -6px rgba(0,0,0,.6);pointer-events:none}
+  .tt-views svg{width:16px;height:16px;fill:#fff;flex:none}
+  .tt-views b{font-family:"Anton",Impact,sans-serif;font-weight:400;font-size:1.15rem;letter-spacing:.02em}
 </style>
 </head>
 <body>
@@ -1252,7 +1314,7 @@
         <li><a href="#sobre">Sobre</a></li>
         <li><a href="#destaques">Destaques</a></li>
         <li><a href="#trabalhos">Trabalhos</a></li>
-        <li><a href="#servicos">Serviços</a></li>
+        <li><a href="#servicos">Formatos</a></li>
         <li><a href="#valores">Investimento</a></li>
         <li><a href="#contato" class="nav-cta">Contato</a></li>
       </ul>
@@ -1448,14 +1510,43 @@
   </div>
 
   <!-- ===================== 5. COMO EU TE AJUDO ===================== -->
-  <section id="servicos" data-mark="SERVIÇOS" aria-labelledby="servicos-title">
+  <section id="servicos" data-mark="FORMATOS" aria-labelledby="servicos-title">
     <div class="glow pink" style="width:460px;height:460px;bottom:-120px;right:-160px;opacity:.22"></div>
     <div class="wrap">
       <div class="head reveal">
-        <p class="eyebrow">Formas de usar</p>
-        <h2 class="title" id="servicos-title"><em>Como usar meu</em> Conteúdo</h2>
+        <p class="eyebrow">UGC x Influência x TikTok Shop</p>
+        <h2 class="title" id="servicos-title">O que cada formato <em>entrega</em></h2>
       </div>
-      <div class="services" id="services"></div>
+      <!-- Comparação dos três formatos: para mudar, edite os textos abaixo -->
+      <div class="formatos">
+        <article class="formato f-ugc reveal">
+          <p class="f-num">01</p><h3>UGC</h3><p class="f-resumo">Conteúdo que eu crio para a <strong>sua marca</strong> publicar.</p>
+          <dl>
+            <dt>Onde aparece</dt><dd>Nas redes, no site e nos anúncios da marca.</dd>
+            <dt>O que você recebe</dt><dd>Roteiro, gravação em 4K, edição e finalização, com os arquivos prontos para usar.</dd>
+            <dt>Como é cobrado</dt><dd>Por pacote ou vídeo unitário.</dd>
+            <dt>Ideal para</dt><dd>Anúncios e conteúdo dos canais da marca.</dd>
+          </dl>
+        </article>
+        <article class="formato f-influ reveal">
+          <p class="f-num">02</p><h3>Influência</h3><p class="f-resumo">Conteúdo publicado no <strong>meu perfil</strong>, em colaboração com a marca.</p>
+          <dl>
+            <dt>Onde aparece</dt><dd>No meu Instagram, para a minha audiência.</dd>
+            <dt>O que você recebe</dt><dd>Reels, stories ou carrossel, somando o meu alcance e engajamento ao da marca.</dd>
+            <dt>Como é cobrado</dt><dd>Por formato ou pacote mensal.</dd>
+            <dt>Ideal para</dt><dd>Reconhecimento e prova social.</dd>
+          </dl>
+        </article>
+        <article class="formato f-tt reveal">
+          <p class="f-num">03</p><h3>TikTok Shop</h3><p class="f-resumo">Vídeos que <strong>vendem direto</strong> pelo meu TikTok Shop.</p>
+          <dl>
+            <dt>Onde aparece</dt><dd>No meu TikTok, com o produto para compra no próprio vídeo.</dd>
+            <dt>O que você recebe</dt><dd>Vídeos nativos da plataforma. Uso fora dela é cobrado como UGC.</dd>
+            <dt>Como é cobrado</dt><dd>Valor por vídeo mais comissão sobre as vendas.</dd>
+            <dt>Ideal para</dt><dd>Venda e conversão.</dd>
+          </dl>
+        </article>
+      </div>
     </div>
   </section>
 
@@ -2020,6 +2111,7 @@ const TIKTOK = {
   data: "19 out a 17 nov de 2026",
   nota: "Números reais da Central de Afiliados do TikTok Shop (últimos 30 dias), sem alteração manual. GMV atribuído é o valor vendido a partir dos meus vídeos. Taxas, ticket médio e categorias calculados automaticamente a partir dos dados obtidos (cliques por impressão = cliques ÷ impressões; compras por clique = itens vendidos ÷ cliques; ticket médio = GMV ÷ itens vendidos).",
   numeros: [
+    { n: "68,5 mil", r: "seguidores" },
     { n: "R$ 44 mil", r: "GMV atribuído (+364%)" },
     { n: "965", r: "itens vendidos (+461%)" },
     { n: "1,3 mi", r: "impressões de produto" },
@@ -2286,9 +2378,9 @@ function filtrar(nome) {
   let n = 0;
   const recolher = nome === "todos";
   worksEl.innerHTML = blocos.map(({ g, videos }, gi) => `
-    <section class="grupo${recolher && gi > 0 ? " fechado" : ""}" aria-label="${esc(g.nome)}">
-      <div class="grupo-topo"${recolher ? ` role="button" tabindex="0" aria-expanded="${gi === 0}"` : ""}>
-        <h3 class="grupo-titulo"><span class="grupo-emoji" aria-hidden="true">${g.emoji}</span>${esc(g.nome)} <small>${videos.length}</small>${recolher ? `<span class="grupo-seta" aria-hidden="true"></span>` : ""}</h3>
+    <section class="grupo" aria-label="${esc(g.nome)}">
+      <div class="grupo-topo">
+        <h3 class="grupo-titulo"><span class="spark" aria-hidden="true"></span>${esc(g.nome)} <small>${videos.length}</small></h3>
         <div class="grupo-setas">
           <button type="button" class="carousel-arrow" data-dir="-1" aria-label="Vídeos anteriores de ${esc(g.nome)}">‹</button>
           <button type="button" class="carousel-arrow" data-dir="1" aria-label="Próximos vídeos de ${esc(g.nome)}">›</button>
@@ -2299,7 +2391,7 @@ function filtrar(nome) {
   $("#worksCount").innerHTML = nome === "nenhum"
     ? `<b class="hint-num">${VIDEOS.length} vídeos</b> · toque em um nicho pra ver`
     : recolher
-    ? `<b class="hint-num">${lista.length} vídeos</b> · clique em um nicho pra abrir`
+    ? `<b class="hint-num">${lista.length} vídeos</b> · arrasta cada fileira pro lado →`
     : `<b class="hint-num">${lista.length} vídeos</b> · arrasta pro lado pra ver todos →`;
   atualizarSetas();
 }
@@ -2352,27 +2444,22 @@ function montarFiltros() {
   filtersEl.innerHTML = [{ nome: "todos", emoji: "✨" }, ...NICHOS].map((g, i) => {
     const total = g.nome === "todos" ? VIDEOS.length : VIDEOS.filter((v) => grupoDe(v.nicho) === g.nome).length;
     if (!total) return "";
-    return `<button type="button" class="filter" data-filter="${esc(g.nome)}" aria-pressed="${i === 0}"><span class="filter-emoji" aria-hidden="true">${g.emoji}</span> ${g.nome === "todos" ? "Todos" : esc(g.nome)} <small>${total}</small></button>`;
+    return `<button type="button" class="filter" data-filter="${esc(g.nome)}" aria-pressed="${i === 0}">${g.nome === "todos" ? "Todos" : esc(g.nome)} <small>${total}</small></button>`;
   }).join("");
 }
 montarFiltros();
 
-/* No celular os vídeos só aparecem depois de tocar na pílula do nicho (tocar de novo fecha) */
+/* Todos os nichos já carregam abertos; a pílula filtra um nicho (no celular a tela rola até os vídeos) */
 const celularNichos = window.matchMedia("(max-width:700px)");
 filtersEl.addEventListener("click", (e) => {
   const btn = e.target.closest(".filter");
   if (!btn) return;
-  const fechar = celularNichos.matches && btn.getAttribute("aria-pressed") === "true";
+  const fechar = false;
   filtersEl.querySelectorAll(".filter").forEach((b) => b.setAttribute("aria-pressed", !fechar && b === btn));
   filtrar(fechar ? "nenhum" : btn.dataset.filter);
   if (celularNichos.matches && !fechar) worksEl.scrollIntoView({ block: "start", behavior: reduceMotion ? "auto" : "smooth" });
 });
-if (celularNichos.matches) {
-  filtersEl.querySelectorAll(".filter").forEach((b) => b.setAttribute("aria-pressed", "false"));
-  filtrar("nenhum");
-} else {
-  filtrar("todos");
-}
+filtrar("todos");
 
 
 /* Player: abre o vídeo grande, na tela, no lugar de mandar a pessoa para o YouTube.
@@ -2418,13 +2505,7 @@ document.addEventListener("keydown", (e) => {
   if (e.key === "ArrowRight") tocar(atual + 1);
 });
 
-/* Serviços */
-$("#services").innerHTML = SERVICOS.map((s, i) => `
-  <article class="service glass reveal">
-    <div class="service-num" aria-hidden="true">${s.emoji}</div>
-    <h3>${esc(s.titulo)}</h3>
-    <p>${esc(s.descricao)}</p>
-  </article>`).join("");
+
 
 /* Métricas */
 const fmt = (n) => n.toLocaleString("pt-BR");
@@ -2556,8 +2637,9 @@ $("#ttCategorias").innerHTML = barrasTxt(TIKTOK.categorias);
 const listaTT = TIKTOK.videos.map((v) => ({ id: v.yt, marca: v.produto, tipo: v.vendas, nicho: "TikTok Shop", extra: "TikTok Shop" }));
 $("#ttVideos").innerHTML = TIKTOK.videos.map((v, i) => `
   <div class="tt-item">
+    <span class="tt-views"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5C6.500 5 2.700 9.100 1.500 12c1.200 2.900 5 7 10.500 7s9.300-4.100 10.500-7C21.300 9.100 17.500 5 12 5zm0 11.500a4.500 4.500 0 1 1 0-9 4.500 4.500 0 0 1 0 9zm0-2.300a2.200 2.200 0 1 0 0-4.400 2.200 2.200 0 0 0 0 4.400z"/></svg><b>${esc(v.views)}</b> views</span>
     ${cardVideo(listaTT[i], i)}
-    <p class="tt-meta"><span><b>${esc(v.views)}</b> visualizações</span><a href="https://www.tiktok.com/@monicamasso_/video/${esc(v.tt)}" target="_blank" rel="noopener">Ver no TikTok ↗</a></p>
+    <p class="tt-meta"><a href="https://www.tiktok.com/@monicamasso_/video/${esc(v.tt)}" target="_blank" rel="noopener">Ver no TikTok ↗</a></p>
   </div>`).join("");
 $("#ttVideosNota").textContent = TIKTOK.videosNota;
 $("#ttFunil").innerHTML = TIKTOK.funil.map((x) => `<div class="tt-linha"><span>${esc(x.l)}</span><b>${esc(x.v)}</b></div>`).join("");
@@ -2709,7 +2791,7 @@ async function videosDoPainel() {
     ordemDoPainel = true;
     montarFiltros();
     const continua = nome && [...filtersEl.querySelectorAll(".filter")].some((b) => b.dataset.filter === nome);
-    const mostrar = continua ? nome : celularNichos.matches ? "nenhum" : "todos";
+    const mostrar = continua ? nome : "todos";
     filtersEl.querySelectorAll(".filter").forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.filter === mostrar)));
     filtrar(mostrar);
   } catch (e) { /* sem internet ou banco fora do ar: fica a lista do site */ }
