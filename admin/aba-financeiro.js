@@ -9,7 +9,7 @@
   const CAMPOS = ["marca", "recebido", "receber_ate", "cache", "produto", "status", "modalidade", "fechamento", "campanha_id"];
   const MESES = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"];
   const STATUS = [["Não começou", "p-cinza"], ["Em andamento", "p-azul"], ["Em transferência", "p-amarelo"], ["Recebido", "p-verde"], ["Em atraso", "p-vermelho"]];
-  const MODALIDADES = [["UGC", "p-roxo"], ["Influencer", "p-laranja"], ["Tiktok Shop", "p-cinza"], ["Modelo", "p-rosa"], ["Portfólio", "p-marrom"], ["Mentoria", "p-cinza"]];
+  const MODALIDADES = [["UGC", "p-roxo"], ["Influencer", "p-laranja"], ["Tiktok Shop", "p-escuro"], ["Modelo", "p-rosa"], ["Portfólio", "p-marrom"], ["Mentoria", "p-cinza"]];
   const pilula = (lista, v, bolinha) => (v ? `<span class="pilula ${bolinha ? "p-bolinha " : ""}${(lista.find((x) => x[0] === v) || [0, "p-cinza"])[1]}">${P.esc(v)}</span>` : "");
 
   let itens = [], camps = [], ano = null, busca = "", el = null;
